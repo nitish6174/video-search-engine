@@ -1,0 +1,13 @@
+# Python cache
+*.pyc
+__pycache__/
+*/__pycache__/
+
+# Flask cache
+static/public/
+static/.webassets-cache/
+
+# Virtual environment folders
+venv/
+venv_py2/
+venv_py3/

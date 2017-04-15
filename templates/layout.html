@@ -1,0 +1,72 @@
+{# Default page variables #}
+{% set head_title       = head_title       | default("My app") %}
+{% set ico_file_name    = ico_file_name    | default("favicon") %}
+{% set meta_description = meta_description | default("Flask website") %}
+{% set meta_keywords    = meta_keywords    | default("flask,website") %}
+{% set assets_css       = assets_css       | default(False) %}
+{% set assets_js        = assets_js        | default(False) %}
+{% set nav_bar          = nav_bar          | default(True) %}
+{% set nav_title        = nav_title        | default("My app") %}
+
+
+<!DOCTYPE html>
+<html>
+
+{# Head tag #}
+<head>
+    <title>{{ head_title }}</title>
+    <meta charset="UTF-8">
+    {% set icon_file_path = "images/ico/"+ico_file_name+".ico" %}
+    <link type="image/x-icon" rel="shortcut icon" href="{{url_for('static',filename=icon_file_path)}}">
+    {# Meta tags #}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Nitish Garg">
+    <meta name="description" content="{{ meta_description }}">
+    <meta name="keywords" content="{{ meta_keywords }}">
+    {# External stylesheets #}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto+Sans">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {# Common CSS #}
+    {% assets "common_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+    {% endassets %}
+    {# Page wise CSS #}
+    {% if assets_css!=False %}
+        {% assets assets_css %}
+        <link rel="stylesheet" href="{{ ASSET_URL }}" />
+        {% endassets %}
+    {% endif %}
+    {# Other head content #}
+    {% block head %}{% endblock %}
+</head>
+
+{# Body tag #}
+<body>
+
+    {# Include navbar and menu #}
+    {% if nav_bar!=False %}
+        {% include 'navbar.html' %}
+    {% endif %}
+
+    {# Include body content #}
+    {% block body %}{% endblock %}
+
+    {# Common JS file #}
+    {% assets "common_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+
+    {# Script section within HTML file (to data from jinja to js) #}
+    {% block scripts %}{% endblock %}
+
+    {# Page wise JS file #}
+    {% if assets_js!=False %}
+        {% assets assets_js %}
+        <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+    {% endif %}
+
+</body>
+
+</html>
+
