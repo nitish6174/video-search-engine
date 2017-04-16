@@ -25,7 +25,7 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
   - GUI for MongoDB : Robomongo  
 * Clone repository and setup virtualenv inside folder  
   ```
-  git clone https://github.com/nitish6174/video-search-engine```  
+  git clone https://github.com/nitish6174/video-search-engine  
   cd <downloaded project path>
   virtualenv -p python3 venv_py3
   ```  
