@@ -1,5 +1,16 @@
 # Used to set : app.config['SEND_FILE_MAX_AGE_DEFAULT']
 static_file_max_age = 3600*24*7
 
-# Used to set : app.config['MONGO_DBNAME']
-db_name = "video-search-engine"
+# Database config
+
+mysql_user = ""
+mysql_pass = ""
+mysql_name = "videoSearchEngine"
+
+mongo_user = ""
+mongo_pass = ""
+mongo_name = "videoSearchEngine"
+
+neo4j_user = ""
+neo4j_pass = ""
+neo4j_name = "videoSearchEngine"
