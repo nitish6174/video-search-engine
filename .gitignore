@@ -11,3 +11,6 @@ static/.webassets-cache/
 venv/
 venv_py2/
 venv_py3/
+
+# Configuration file
+config.py
