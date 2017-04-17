@@ -11,10 +11,13 @@ from routes import routes_module
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = config.static_file_max_age
 
-app.config['MYSQL_USER']     = config.mysql_user
-app.config['MYSQL_PASSWORD'] = config.mysql_pass
-app.config['MYSQL_DB']       = config.mysql_name
-app.config['MONGO_DBNAME']   = config.mongo_name
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://"+\
+                                        config.mysql_user+":"+\
+                                        config.mysql_pass+"@"+\
+                                        "localhost:3306/"+\
+                                        config.mysql_name
+app.config['MONGO_DBNAME'] = config.mongo_name
 
 # Apply extensions on flaskapp
 Compress(app)

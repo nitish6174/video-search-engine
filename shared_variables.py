@@ -1,8 +1,8 @@
-from flask_mysqldb import MySQL
+from flask_sqlalchemy import SQLAlchemy
 from flask_pymongo import PyMongo
 
 # MySQL client
-mysql = MySQL()
+mysql = SQLAlchemy()
 
 # MongoDB client
 mongo = PyMongo()

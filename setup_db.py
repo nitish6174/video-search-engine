@@ -1,5 +1,5 @@
 import os, json
-import MySQLdb
+import sqlalchemy as sql
 from pymongo import MongoClient
 from py2neo import Graph, Node, Relationship
 import config
@@ -30,17 +30,8 @@ def read_data_files():
 
 
 def setup_mysql_db(video_data):
-    cursor = connect_to_db("mysql")
-    q = [
-          "DROP DATABASE IF EXISTS "+config.mysql_name+";" ,
-          "CREATE DATABASE IF NOT EXISTS "+config.mysql_name+";" ,
-          "USE "+config.mysql_name+";"
-        ]
-    print("Inserting data in MySQL . . .")
-    for x in q:
-        print("Running MySQL :",x)
-        cursor.execute(x)
-    # Create tables
+    db = connect_to_db("mysql")
+    # Define schema
     # Insert data
     print("MySQL setup done!")
     print("-"*20)
@@ -56,9 +47,9 @@ def setup_mongo_db(video_data):
 
 
 def setup_neo4j_db(video_data):
-    neo4j_cursor = connect_to_db("neo4j")
+    db = connect_to_db("neo4j")
     print("Inserting data in Neo4j . . .")
-    neo4j_cursor.delete_all()
+    db.delete_all()
     # Insert nodes
     # Insert edges
     print("Neo4j setup done!")
@@ -68,12 +59,17 @@ def setup_neo4j_db(video_data):
 def connect_to_db(db_type):
     print("Connecting to",db_type,"database . . .")
     db_conn = None
-    if db_type=="mysql":
-        db_conn = MySQLdb.connect(user=config.mysql_user,passwd=config.mysql_pass).cursor()
-    elif db_type=="mongo":
-        db_conn = MongoClient('localhost', 27017)[config.mongo_name]
-    elif db_type=="neo4j":
-        db_conn = Graph(user=config.neo4j_user,password=config.neo4j_pass)
+    try:
+        if db_type=="mysql":
+            url = "mysql://"+config.mysql_user+":"+config.mysql_pass+"@"+"localhost:3306/"+config.mysql_name
+            db_conn = sql.create_engine(url)
+            # db_conn = MySQLdb.connect(user=config.mysql_user,passwd=config.mysql_pass).cursor()
+        elif db_type=="mongo":
+            db_conn = MongoClient('localhost', 27017)[config.mongo_name]
+        elif db_type=="neo4j":
+            db_conn = Graph(user=config.neo4j_user,password=config.neo4j_pass)
+    except:
+        print("\nERROR : Can't connect to database")
     if db_conn==None:
         exit(1)
     print("Database connected")
