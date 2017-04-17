@@ -8,6 +8,7 @@ def getAssets():
             'css/ext/bootstrap.min.css',
             'css/common.css',
             'css/navbar.css',
+            'css/search_bar.css',
             output='public/common.%(version)s.css',
             filters='cssmin'),
         'common_js': Bundle(

@@ -1,0 +1,10 @@
+{
+  "name": "video-search-engine",
+  "version": "0.1.0",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^2.1.2"
+  }
+}

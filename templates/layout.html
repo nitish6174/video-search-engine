@@ -7,6 +7,7 @@
 {% set assets_js        = assets_js        | default(False) %}
 {% set nav_bar          = nav_bar          | default(True) %}
 {% set nav_title        = nav_title        | default("My app") %}
+{% set search_bar       = search_bar       | default(True) %}
 
 
 <!DOCTYPE html>
@@ -46,6 +47,11 @@
     {# Include navbar and menu #}
     {% if nav_bar!=False %}
         {% include 'navbar.html' %}
+    {% endif %}
+
+    {# Include search bar #}
+    {% if search_bar!=False %}
+        {% include 'search_bar.html' %}
     {% endif %}
 
     {# Include body content #}

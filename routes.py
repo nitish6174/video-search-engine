@@ -7,15 +7,31 @@ from mysql_schema import *
 routes_module = Blueprint('routes_module', __name__)
 
 
+# Home page showing top videos (and recommended videos if signed in)
 @routes_module.route('/', methods=["GET"])
 def homePage():
     if request.method == 'GET':
-        mysql_db = mysql
-        mongo_db = mongo.db
-        neo4j_db = Graph(user=config.neo4j_user,password=config.neo4j_pass)
-        # test_db(mysql_db,mongo_db,neo4j_db)
         return render_template('home.html')
 
+
+# Login page
+@routes_module.route('/login', methods=["GET"])
+def loginPage():
+    if request.method == 'GET':
+        return render_template('login.html')
+
+
+# Sign Up page
+@routes_module.route('/signup', methods=["GET"])
+def signupPage():
+    if request.method == 'GET':
+        return render_template('signup.html')
+
+
+# mysql_db = mysql
+# mongo_db = mongo.db
+# neo4j_db = Graph(user=config.neo4j_user,password=config.neo4j_pass)
+# test_db(mysql_db,mongo_db,neo4j_db)
 
 def test_db(mysql_db,mongo_db,neo4j_db):
     # MySQL

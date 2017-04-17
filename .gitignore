@@ -12,5 +12,8 @@ venv/
 venv_py2/
 venv_py3/
 
+# Node modules
+node_modules/
+
 # Configuration file
 config.py

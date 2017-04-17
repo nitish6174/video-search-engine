@@ -2,13 +2,16 @@
     <div class="container">
         <div>
             <ul class="nav navbar-nav navbar-left">
-                <li><a class="navbar-brand text-center" href="#"><h1>{{ nav_title }}</h1></a></li>
+                <li><a class="navbar-brand text-center" href="/"><h1>{{ nav_title }}</h1></a></li>
             </ul>
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a title="Home" href="/"><i class="glyphicon glyphicon-home"></i></a></li>
-                <li><a title="Menu" href="#"><i class="glyphicon glyphicon-th"></i></a></li>
+                {% if user_session %}
+                <li><a title="Sign out" href="/logout">SIGN OUT</a></li>
+                {% else %}
+                <li><a title="Sign out" href="/login">SIGN IN</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

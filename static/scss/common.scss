@@ -1,0 +1,9 @@
+@import './variables';
+
+body {
+    font-family: $font-text;
+}
+
+.corner {
+    border-radius: 0px;
+}

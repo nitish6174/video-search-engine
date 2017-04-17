@@ -1,3 +1,5 @@
 body {
-    font-family: 'Noto Sans', sans-serif;
-}
+  font-family: "Noto Sans", sans-serif; }
+
+.corner {
+  border-radius: 0px; }
