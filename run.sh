@@ -1,2 +1,2 @@
 gulp scss
-python app.py
+python flaskapp/app.py

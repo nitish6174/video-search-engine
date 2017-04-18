@@ -29,10 +29,6 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
   cd <downloaded project path>
   virtualenv -p python3 venv_py3
   ```  
-* Make config file and modify it  
-  ```
-  cp config.py.example config.py
-  ```  
 * Setup SCSS compiler using gulp  
   ```
   sudo apt-get install nodejs nodejs-legacy npm
@@ -41,10 +37,19 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
 * Install pip dependencies inside virtualenv  
   ```
   source venv_py3/bin/activate  
-  pip3 install -r requirements.txt
+  pip install -r requirements.txt
+  ```  
+* Make config file and modify it  
+  ```
+  cp flaskapp/config.py.example flaskapp/config.py
   ```  
 * Running :  
-  - ```./run.sh``` (Run ```chmod +x run.sh``` to enable)  
+  - Setup database and enable bash script file :  
+    ```
+    chmod +x run.sh
+    python setup_db.py
+    ```  
+  - Run flask server with ```./run.sh```  
   - Project will be available at ```localhost:5000```  
   - Use ```Ctrl-C``` to stop flask server  
   - Use ```deactivate``` to exit virtualenv  

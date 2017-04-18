@@ -5,12 +5,12 @@ static_file_max_age = 3600*24*7
 
 mysql_user = ""
 mysql_pass = ""
-mysql_name = "videoSearchEngine"
+mysql_name = "video_search_engine"
 
 mongo_user = ""
 mongo_pass = ""
-mongo_name = "videoSearchEngine"
+mongo_name = "video_search_engine"
 
 neo4j_user = ""
 neo4j_pass = ""
-neo4j_name = "videoSearchEngine"
+neo4j_name = "video_search_engine"

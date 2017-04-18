@@ -1,12 +1,3 @@
-# Python cache
-*.pyc
-__pycache__/
-*/__pycache__/
-
-# Flask cache
-static/public/
-static/.webassets-cache/
-
 # Virtual environment folders
 venv/
 venv_py2/
@@ -15,5 +6,14 @@ venv_py3/
 # Node modules
 node_modules/
 
+# Python cache
+*.pyc
+__pycache__/
+*/__pycache__/
+
+# Flask static cache
+flaskapp/static/public/
+flaskapp/static/.webassets-cache/
+
 # Configuration file
-config.py
+flaskapp/config.py
