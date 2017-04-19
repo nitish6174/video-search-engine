@@ -43,12 +43,14 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
   ```
   cp flaskapp/config.py.example flaskapp/config.py
   ```  
+* Add video data in the root of repository as the folder name ```data/```  
+  Sample data files available at [this link](https://drive.google.com/open?id=0Byz7IT6HpkQ0WktGdG95eUhyV00)
+* Setup database and enable bash script file :
+  ```
+  chmod +x run.sh
+  python setup_db.py
+  ```  
 * Running :  
-  - Setup database and enable bash script file :  
-    ```
-    chmod +x run.sh
-    python setup_db.py
-    ```  
   - Run flask server with ```./run.sh```  
   - Project will be available at ```localhost:5000```  
   - Use ```Ctrl-C``` to stop flask server  
