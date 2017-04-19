@@ -1,4 +1,6 @@
-import sys, os, json
+import os
+import sys
+import json
 import sqlalchemy as sql
 from pymongo import MongoClient
 from py2neo import authenticate, Graph, Node, Relationship
@@ -78,17 +80,19 @@ def connect_to_db(db_type):
     db_conn = None
     try:
         if db_type=="mysql":
-            url = "mysql://"+config.mysql_user+":"+config.mysql_pass+\
-                  "@"+"localhost:3306/"+config.mysql_name
+            url = "mysql://"+config.mysql_user+":"+config.mysql_pass \
+                  +"@"+"localhost:3306/"+config.mysql_name
             db_conn = sql.create_engine(url)
-            # db_conn = MySQLdb.connect(user=config.mysql_user,\
+            # db_conn = MySQLdb.connect(user=config.mysql_user, \
             #                           passwd=config.mysql_pass).cursor()
         elif db_type=="mongo":
             db_conn = MongoClient('localhost', 27017)[config.mongo_name]
         elif db_type=="neo4j":
-            authenticate('localhost:7474', config.neo4j_user, config.neo4j_pass)
+            authenticate('localhost:7474',
+                         config.neo4j_user, config.neo4j_pass)
             db_conn = Graph()
-            # db_conn = Graph(user=config.neo4j_user,password=config.neo4j_pass)
+            # db_conn = Graph(user=config.neo4j_user,
+            #                 password=config.neo4j_pass)
     except:
         print("\n\nERROR : Can't connect to database")
     if db_conn==None:

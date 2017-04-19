@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+
+
+{# Page variables #}
+{% set head_title       = "Video search engine" %}
+{# {% set ico_file_name    = "favicon" %} #}
+{% set meta_description = "Video search engine based on MySQL, MongoDB, Neo4j" %}
+{% set meta_keywords    = "video,search,engine,flask,mysql,mongodb,neo4j" %}
+{% set assets_css       = "watch_css" %}
+{% set assets_js        = "watch_js" %}
+{% set nav_bar          = True %}
+{% set nav_title        = "Video search engine" %}
+{% set search_bar       = True %}
+
+
+
+{# Head block #}
+{% block head %}
+
+{% endblock %}
+
+
+
+{# Body content #}
+{% block body %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-7">
+            <div class="text-center" id="watchVideoPlayerBox">
+                {% set url = display_video['snippet']['thumbnails']['high']['url'] %}
+                <img src="{{ url }}">
+            </div>
+            <div class="page-box" id="watchVideoInfo">
+                <div class="page-box-content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h3>{{ display_video['snippet']['title'] }}</h3>
+                            <hr>
+                            <div class="clearfix">
+                                <div class="right text-right">
+                                    <h4>{{ display_video['statistics']['viewCount'] }} views</h4>
+                                    <hr>
+                                    <h5>
+                                        <i class="glyphicon glyphicon-thumbs-up"></i> {{ display_video['statistics']['likeCount'] }} &nbsp;
+                                        <i class="glyphicon glyphicon-thumbs-down"></i> {{ display_video['statistics']['dislikeCount'] }}
+                                    </h5>
+                                    <h5>{{ display_video['statistics']['commentCount'] }} comments</h5>
+                                </div>
+                                <h4>Published by : {{ display_video['snippet']['channelTitle'] }}</h4>
+                            </div>
+                            <hr>
+                            {% set description = (display_video['snippet']['description']).split('\n') %}
+                            <p>
+                            {% for x in description %}
+                                {{ x }}
+                                <br>
+                            {% endfor %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-5">
+            <div class="page-box" id="relatedVideosBox">
+                <div class="page-box-title">Related videos</div>
+                <div class="page-box-content">
+                    <div class="row">
+                    {% for x in related_videos %}
+                        <div class="col-xs-4 text-center">
+                            {% set url = x['snippet']['thumbnails']['high']['url'] %}
+                            <img src="{{ url }}">
+                        </div>
+                        <div class="col-xs-8">
+                            <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+
+{# Scripts block #}
+{% block scripts %}
+
+{% endblock %}

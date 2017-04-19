@@ -7,10 +7,13 @@ body {
 .corner {
   border-radius: 0px; }
 
+.right {
+  float: right; }
+
 /* Page box styling */
 .page-box {
   background-color: #fff;
-  box-shadow: 2px 2px 2px 0px #ccc;
+  box-shadow: 0px 0px 2px 0px #ccc;
   margin-bottom: 50px; }
   .page-box .page-box-title {
     border-bottom: 2px solid whitesmoke;

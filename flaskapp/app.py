@@ -21,8 +21,8 @@ Compress(app)
 
 # MySQL with SQLAlchemy
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-url = "mysql://"+config.mysql_user+":"+config.mysql_pass+\
-      "@"+"localhost:3306/"+config.mysql_name
+url = "mysql://"+config.mysql_user+":"+config.mysql_pass \
+      +"@"+"localhost:3306/"+config.mysql_name
 app.config['SQLALCHEMY_DATABASE_URI'] = url
 var.mysql.init_app(app)
 

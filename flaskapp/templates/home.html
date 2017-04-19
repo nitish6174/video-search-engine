@@ -34,8 +34,10 @@
             {% for x in top_videos %}
                 <div class="col-lg-3 col-sm-4 text-center">
                     {% set url = x['snippet']['thumbnails']['high']['url'] %}
+                    <a href="/watch/{{ x['id'] }}">
                     <img src="{{ url }}">
                     <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
+                    </a>
                 </div>
             {% endfor %}
             </div>

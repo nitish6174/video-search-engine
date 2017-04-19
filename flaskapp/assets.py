@@ -24,6 +24,33 @@ def getAssets():
         'home_js': Bundle(
             'js/home.js',
             output='public/home.%(version)s.js',
+            filters='jsmin'),
+
+        'watch_css': Bundle(
+            'css/watch.css',
+            output='public/watch.%(version)s.css',
+            filters='cssmin'),
+        'watch_js': Bundle(
+            'js/watch.js',
+            output='public/watch.%(version)s.js',
+            filters='jsmin'),
+
+        'user_css': Bundle(
+            'css/user.css',
+            output='public/user.%(version)s.css',
+            filters='cssmin'),
+        'user_js': Bundle(
+            'js/user.js',
+            output='public/user.%(version)s.js',
+            filters='jsmin'),
+
+        'error_css': Bundle(
+            'css/error.css',
+            output='public/error.%(version)s.css',
+            filters='cssmin'),
+        'error_js': Bundle(
+            'js/error.js',
+            output='public/error.%(version)s.js',
             filters='jsmin')
     }
     return bundles

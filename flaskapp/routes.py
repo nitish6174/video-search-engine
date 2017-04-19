@@ -11,8 +11,24 @@ routes_module = Blueprint('routes_module', __name__)
 def home_page():
     if request.method == 'GET':
         mongo_db = mongo.db
-        top_videos = mongo_db.videos.find().sort("statistics.viewCount",-1).limit(12)
-        return render_template('home.html',top_videos=doc_list(top_videos))
+        top_videos = doc_list(mongo_db.videos.find()
+                              .sort("statistics.viewCount",-1).limit(12))
+        return render_template('home.html',top_videos=top_videos)
+
+
+# Render video by requested Id
+@routes_module.route('/watch/<video_id>/', methods=["GET"])
+def video_page(video_id):
+    if request.method == 'GET':
+        mongo_db = mongo.db
+        disp_video = mongo_db.videos.find_one({"id":video_id})
+        if disp_video!=None:
+            return render_template('watch.html',
+                                   display_video=disp_video,
+                                   related_videos=[disp_video])
+        else:
+            return render_template('error.html',
+                                   message="Requested video not found")
 
 
 # Login page
@@ -27,6 +43,7 @@ def login_page():
 def signup_page():
     if request.method == 'GET':
         return render_template('signup.html')
+
 
 
 # Utility function to make document array from cursor

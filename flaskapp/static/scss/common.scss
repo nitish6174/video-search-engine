@@ -15,11 +15,15 @@ body {
     border-radius: 0px;
 }
 
+.right {
+    float: right;
+}
+
 
 /* Page box styling */
 .page-box {
     background-color: #fff;
-    box-shadow: 2px 2px 2px 0px #ccc;
+    box-shadow: $drop-shadow;
     margin-bottom: 50px;
 
     .page-box-title {

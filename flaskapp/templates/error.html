@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+
+
+{# Page variables #}
+{% set head_title       = "Video search engine" %}
+{# {% set ico_file_name    = "favicon" %} #}
+{% set meta_description = "Video search engine based on MySQL, MongoDB, Neo4j" %}
+{% set meta_keywords    = "video,search,engine,flask,mysql,mongodb,neo4j" %}
+{% set assets_css       = "error_css" %}
+{% set assets_js        = "error_js" %}
+{% set nav_bar          = False %}
+{% set nav_title        = "Video search engine" %}
+{% set search_bar       = False %}
+
+
+
+{# Head block #}
+{% block head %}
+
+{% endblock %}
+
+
+
+{# Body content #}
+{% block body %}
+
+<div class="container">
+    <br>
+    <h2 class="text-center">Oops!</h2>
+    <h3 class="text-center">{{ message }}</h3>
+    <h4 class="text-center">Go back to <a href="/" title="Home page">home page</a></h4>
+</div>
+
+{% endblock %}
+
+
+
+{# Scripts block #}
+{% block scripts %}
+
+{% endblock %}
