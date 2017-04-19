@@ -17,3 +17,6 @@ flaskapp/static/.webassets-cache/
 
 # Configuration file
 flaskapp/config.py
+
+# Video data
+data/
