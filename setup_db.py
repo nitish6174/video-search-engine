@@ -78,9 +78,11 @@ def connect_to_db(db_type):
     db_conn = None
     try:
         if db_type=="mysql":
-            url = "mysql://"+config.mysql_user+":"+config.mysql_pass+"@"+"localhost:3306/"+config.mysql_name
+            url = "mysql://"+config.mysql_user+":"+config.mysql_pass+\
+                  "@"+"localhost:3306/"+config.mysql_name
             db_conn = sql.create_engine(url)
-            # db_conn = MySQLdb.connect(user=config.mysql_user,passwd=config.mysql_pass).cursor()
+            # db_conn = MySQLdb.connect(user=config.mysql_user,\
+            #                           passwd=config.mysql_pass).cursor()
         elif db_type=="mongo":
             db_conn = MongoClient('localhost', 27017)[config.mongo_name]
         elif db_type=="neo4j":
@@ -151,11 +153,10 @@ def commonTagCount(x,y):
 
 # Find no of common words b/w 2 videos
 def commonDescription(x,y):
-    reject_list1 = set(["the","of","and","a","to","in","is","you","that","it","he","was","for","on","are","as","with","his","they","I","at","be","this","have","from","or","one","had","by","word","but","not","what","all","were","we","when","your","can","said","there","use","an","each","which","she","do","how","their","if","will","up","other","about","out","many","then","them","these","so","some","her","would","make","like","him","into","time","has","look","two","more","write","go","see","number","no","way","could","people","my","than","first","water","been","call","who","oil","its","now","find","long","down","day","did","get","come","made","may","part"])
-    reject_list2 = set(["video","like","subscribe","follow"])
+    reject_list = set([line.rstrip('\n') for line in open("common_words.txt")])
     desc1 = wordsInDescription(x["description"])
     desc2 = wordsInDescription(y["description"])
-    common_set = (desc1&desc2)-(reject_list1|reject_list2)
+    common_set = (desc1&desc2)-(reject_list)
     return len(common_set)
 
 

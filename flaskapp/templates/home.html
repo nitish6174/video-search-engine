@@ -27,15 +27,21 @@
 
 <div class="container">
 
-    <h1 class="text-center">Top videos</h1>
-
-    <ul>
-        <li>Video1</li>
-        <li>Video2</li>
-        <li>Video3</li>
-        <li>Video4</li>
-        <li>Video5</li>
-    </ul>
+    <div class="page-box" id="topVideosBox">
+        <div class="page-box-title">Top videos</div>
+        <div class="page-box-content">
+            <div class="row">
+            {% for x in top_videos %}
+                <div class="col-lg-3 col-sm-4 text-center">
+                    {% set url = x['snippet']['thumbnails']['high']['url'] %}
+                    <img src="{{ url }}">
+                    {# <div class="video-thumbnail-title">{{ url }}</div> #}
+                    <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
 
 </div>
 

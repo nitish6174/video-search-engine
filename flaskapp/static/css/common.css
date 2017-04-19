@@ -1,5 +1,23 @@
+/* Body styling */
 body {
-  font-family: "Noto Sans", sans-serif; }
+  font-family: "Noto Sans", sans-serif;
+  background-color: whitesmoke; }
 
+/* Common property classes */
 .corner {
   border-radius: 0px; }
+
+/* Page box styling */
+.page-box {
+  background-color: #fff;
+  box-shadow: 2px 2px 2px 0px #ccc;
+  margin-bottom: 50px; }
+  .page-box .page-box-title {
+    border-bottom: 2px solid whitesmoke;
+    padding: 15px;
+    padding-left: 20px;
+    font-size: 1.3em; }
+  .page-box .page-box-content {
+    padding: 20px; }
+  .page-box img {
+    width: 90%; }

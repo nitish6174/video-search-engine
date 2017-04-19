@@ -1,5 +1,7 @@
 @import './variables';
 
-body {
-    background-color: $color-bg-light;
+#topVideosBox {
+    .page-box-content > div > div {
+        margin-bottom: 30px;
+    }
 }

@@ -1,9 +1,39 @@
 @import './variables';
 
+
+/* Body styling */
+
 body {
     font-family: $font-text;
+    background-color: $color-bg-light;
 }
+
+
+/* Common property classes */
 
 .corner {
     border-radius: 0px;
+}
+
+
+/* Page box styling */
+.page-box {
+    background-color: #fff;
+    box-shadow: 2px 2px 2px 0px #ccc;
+    margin-bottom: 50px;
+
+    .page-box-title {
+        border-bottom: 2px solid $color-bg-light;
+        padding: 15px;
+        padding-left: 20px;
+        font-size: 1.3em;
+    }
+
+    .page-box-content {
+        padding: 20px;
+    }
+
+    img {
+        width: 90%;
+    }
 }
