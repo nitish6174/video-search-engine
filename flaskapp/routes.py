@@ -1,4 +1,5 @@
 import re
+import json
 from urllib import parse
 
 from flask import Blueprint, request, render_template, jsonify, redirect, session
@@ -52,20 +53,39 @@ def video_page(video_id):
                 elif x.type() == "CommonDesc":
                     weight = x["weight"]
                 mongo_id = (x.end_node())["mongoId"]
-                if mongo_id in edge_end_nodes:
-                    edge_end_nodes[mongo_id] += weight
+                related_id = (x.end_node())["videoId"]
+                if related_id in edge_end_nodes:
+                    edge_end_nodes[related_id]["weight"] += weight
                 else:
-                    edge_end_nodes[mongo_id] = weight
+                    edge_end_nodes[related_id] = {
+                        "mongoId": mongo_id,
+                        "weight": weight
+                    }
+            if session["user_name"]:
+                log_res = VideoLog.query.filter_by(
+                    user_name=session["user_name"],
+                    current_video=video_id).all()
+                for x in log_res:
+                    related_video_id = x.clicked_video
+                    if related_video_id in edge_end_nodes:
+                        edge_end_nodes[related_video_id]["weight"] += 2
             related_nodes = [
-                {"mongoId": x, "weight": edge_end_nodes[x]}
+                {
+                    "videoId": x,
+                    "mongoId": edge_end_nodes[x]["mongoId"],
+                    "weight": edge_end_nodes[x]["weight"]
+                }
                 for x in edge_end_nodes
             ]
             related_nodes.sort(key=lambda x: x["weight"], reverse=True)
-            related_nodes = related_nodes[:20]
+            related_nodes = related_nodes[:10]
             mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
             related_videos = list(mongo_db.videos.find({
                 "_id": {"$in": mongo_ids}
             }))
+            for x in related_videos:
+                x["weight"] = edge_end_nodes[x["id"]]["weight"]
+            related_videos.sort(key=lambda x: x["weight"], reverse=True)
             return render_template('watch.html',
                                    display_video=disp_video,
                                    related_videos=related_videos)
