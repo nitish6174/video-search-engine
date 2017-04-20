@@ -1,5 +1,6 @@
-import click
+import subprocess
 
+import click
 from flask import Flask
 from flask_compress import Compress
 from flask_assets import Environment

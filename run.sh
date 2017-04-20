@@ -1,2 +1,3 @@
+#!/bin/bash
 gulp
-python flaskapp/app.py
+flask run

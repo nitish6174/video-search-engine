@@ -8,51 +8,50 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
     ```
     sudo apt-get install python3 python3-pip
     pip3 install virtualenv
-    ```  
-* Install databases : MySQL, MongoDB, Neo4j  
-  - MySQL    
+    ```
+* Install databases : MySQL, MongoDB, Neo4j
+  - MySQL
     ```
     sudo apt-get install mysql-client mysql-server libmysqlclient-dev
-    ```  
-  - MongoDB  
+    ```
+  - MongoDB
     ```
     sudo apt-get install mongodb
-    ```  
-  - GUI for MySQL  
+    ```
+  - GUI for MySQL
     ```
     sudo apt-get install mysql-workbench
-    ```  
-  - GUI for MongoDB : Robomongo  
-* Clone repository and setup virtualenv inside folder  
+    ```
+  - GUI for MongoDB : Robomongo
+* Clone repository and setup virtualenv inside folder
   ```
-  git clone https://github.com/nitish6174/video-search-engine  
+  git clone https://github.com/nitish6174/video-search-engine
   cd <downloaded project path>
   virtualenv -p python3 venv_py3
-  ```  
-* Setup SCSS compiler using gulp  
+  ```
+* Setup SCSS compiler using gulp
   ```
   sudo apt-get install nodejs nodejs-legacy npm
-  sudo npm install
-  ```  
-* Install pip dependencies inside virtualenv  
+  npm install .
   ```
-  source venv_py3/bin/activate  
+* Install pip dependencies inside virtualenv
+  ```
+  source venv_py3/bin/activate
   pip install -r requirements.txt
-  ```  
-* Make config file and modify it  
+  ```
+* Make config file and modify it
   ```
   cp flaskapp/config.py.example flaskapp/config.py
-  ```  
-* Add video data in the root of repository as the folder name ```data/```  
-  Sample data files available at [this link](https://drive.google.com/open?id=0Byz7IT6HpkQ0WktGdG95eUhyV00)
-* Setup database and enable bash script file :
   ```
-  chmod +x run.sh
-  python setup_db.py
-  ```  
-* Running :  
-  - Make sure databases are up  
-  - Run flask server with ```./run.sh```  
-  - Project will be available at ```localhost:5000```  
-  - Use ```Ctrl-C``` to stop flask server  
-  - Use ```deactivate``` to exit virtualenv  
+* Add video data in the root of repository as the folder name ```data/```
+  Sample data files available at [this link](https://goo.gl/gZHPL8)
+
+* Running :
+  - Make sure databases are up
+  - Export the flask variable with ```export FLASK_APP=./flaskapp/app.py```
+  - Init the DB models with ```flask create_db```
+  - Run gulp to compile CSS ```gulp```
+  - Run server with ```./run.sh```
+  - Project will be available at ```localhost:5000```
+  - Use ```Ctrl-C``` to stop flask server
+  - Use ```deactivate``` to exit virtualenv

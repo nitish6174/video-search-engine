@@ -2,6 +2,7 @@
 static_file_max_age = 3600 * 24 * 7
 
 # Database config
+data_folder = "../data"
 
 mysql_user = ""
 mysql_pass = ""

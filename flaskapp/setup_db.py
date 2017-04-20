@@ -177,7 +177,3 @@ def wordsInDescription(s):
     a = list(map(lambda x: x.lower(), s.split()))
     a = filter(lambda x: len(x) > 2 and len(x) < 15, a)
     return set(a)
-
-
-# Run main function
-main()
