@@ -36,6 +36,15 @@ def getAssets():
             output='public/watch.%(version)s.js',
             filters='jsmin'),
 
+        'search_css': Bundle(
+            'css/search.css',
+            output='public/search.%(version)s.css',
+            filters='cssmin'),
+        'search_js': Bundle(
+            'js/search.js',
+            output='public/search.%(version)s.js',
+            filters='jsmin'),
+
         'user_css': Bundle(
             'css/user.css',
             output='public/user.%(version)s.css',

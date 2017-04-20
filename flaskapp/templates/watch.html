@@ -29,10 +29,11 @@
 
     <div class="row">
         <div class="col-sm-7">
-            <div class="text-center" id="watchVideoPlayerBox">
-                {% set url = display_video['snippet']['thumbnails']['high']['url'] %}
-                <img src="{{ url }}">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="http://youtube.com/embed/{{display_video['id']}}" ></iframe>
             </div>
+
+
             <div class="page-box" id="watchVideoInfo">
                 <div class="page-box-content">
                     <div class="row">
@@ -97,9 +98,7 @@
 {% endblock %}
 
 
-
 {# Scripts block #}
 {% block scripts %}
-<script type="text/javascript">currentVideo = "{{ display_video['id'] }}";</script>
-
+<iframe width="854" height="480" src="https://www.youtube.com/embed/hIC9ASK0IbA" frameborder="0" allowfullscreen></iframe>
 {% endblock %}

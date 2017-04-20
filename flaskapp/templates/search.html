@@ -7,8 +7,8 @@
 {# {% set ico_file_name    = "favicon" %} #}
 {% set meta_description = "Video search engine based on MySQL, MongoDB, Neo4j" %}
 {% set meta_keywords    = "video,search,engine,flask,mysql,mongodb,neo4j" %}
-{% set assets_css       = "home_css" %}
-{% set assets_js        = "home_js" %}
+{% set assets_css       = "search_css" %}
+{% set assets_js        = "search_js" %}
 {% set nav_bar          = True %}
 {% set nav_title        = "Video search engine" %}
 {% set search_bar       = True %}
@@ -34,7 +34,7 @@
             {% for x in results %}
                 <div class="col-lg-3 col-sm-4 text-center">
                     {% set url = x['snippet']['thumbnails']['high']['url'] %}
-                    <a class="video-link" href="/watch/{{ x['id'] }}">
+                    <a class="video-link" href="/watch/{{ x['id'] }}" name = "{{ x['id']}}">
                     <img src="{{ url }}">
                     <div class="text-left">
                         <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
@@ -56,5 +56,7 @@
 
 {# Scripts block #}
 {% block scripts %}
+
+<script type="text/javascript">query = "{{query}}";</script>
 
 {% endblock %}
