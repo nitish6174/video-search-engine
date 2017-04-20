@@ -1,4 +1,5 @@
 import re
+from urllib import parse
 
 from flask import Blueprint, request, render_template, jsonify, redirect, session
 from bson.objectid import ObjectId
@@ -56,7 +57,7 @@ def video_page(video_id):
                 for x in edge_end_nodes
             ]
             related_nodes.sort(key=lambda x: x["weight"], reverse=True)
-            related_nodes = related_nodes[:10]
+            related_nodes = related_nodes[:20]
             mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
             related_videos = doc_list(mongo_db.videos.find({
                 "_id": {"$in": mongo_ids}
@@ -73,14 +74,16 @@ def video_page(video_id):
 @routes_module.route('/search/<query>/', methods=["GET"])
 def search_results_page(query):
     if request.method == 'GET':
+        query = parse.unquote(query)
         res = search_util(query)
-        return render_template('search.html', results=res)
+        return render_template('search.html', query=query, results=res)
 
 
 # Search for a query
 @routes_module.route('/search/', methods=["POST"])
 def search_bar(query):
     if request.method == 'POST':
+        query = parse.unquote(query)
         res = search_util(query)
         return jsonify(res)
 
