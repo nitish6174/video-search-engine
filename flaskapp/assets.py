@@ -1,9 +1,9 @@
 from flask_assets import Bundle
-from webassets.filter import get_filter
+
 
 # Asset object
 def getAssets():
-    bundles = { 
+    bundles = {
         'common_css': Bundle(
             'css/ext/bootstrap.min.css',
             'css/common.css',

@@ -1,5 +1,6 @@
 from shared_variables import mysql as db
 
+
 class User(db.Model):
     user_name = db.Column(db.String(30), unique=True, primary_key=True)
     user_pass = db.Column(db.String(30))

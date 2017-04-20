@@ -10,6 +10,9 @@ body {
 .right {
   float: right; }
 
+.bottom-gap {
+  margin-bottom: 20px; }
+
 /* Page box styling */
 .page-box {
   background-color: #fff;

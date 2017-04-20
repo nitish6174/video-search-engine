@@ -51,6 +51,7 @@ Flask-based application using MySQL, MongoDB and Neo4j for storing video data an
   python setup_db.py
   ```  
 * Running :  
+  - Make sure databases are up  
   - Run flask server with ```./run.sh```  
   - Project will be available at ```localhost:5000```  
   - Use ```Ctrl-C``` to stop flask server  

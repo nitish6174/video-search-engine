@@ -1,5 +1,5 @@
 # Used to set : app.config['SEND_FILE_MAX_AGE_DEFAULT']
-static_file_max_age = 3600*24*7
+static_file_max_age = 3600 * 24 * 7
 
 # Database config
 

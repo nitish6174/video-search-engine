@@ -71,12 +71,17 @@
                 <div class="page-box-content">
                     <div class="row">
                     {% for x in related_videos %}
-                        <div class="col-xs-4 text-center">
-                            {% set url = x['snippet']['thumbnails']['high']['url'] %}
-                            <img src="{{ url }}">
-                        </div>
-                        <div class="col-xs-8">
-                            <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
+                        <div class="bottom-gap">
+                        <a href="/watch/{{ x['id'] }}">
+                            <div class="col-xs-4 text-center">
+                                {% set url = x['snippet']['thumbnails']['high']['url'] %}
+                                <img src="{{ url }}">
+                            </div>
+                            <div class="col-xs-8">
+                                <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>
                         </div>
                     {% endfor %}
                     </div>
