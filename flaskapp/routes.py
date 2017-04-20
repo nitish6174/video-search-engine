@@ -61,9 +61,9 @@ def video_page(video_id):
                         "mongoId": mongo_id,
                         "weight": weight
                     }
-            if session["user_name"]:
+            if session.get("user_name"):
                 log_res = VideoLog.query.filter_by(
-                    user_name=session["user_name"],
+                    user_name=session.get("user_name"),
                     current_video=video_id).all()
                 for x in log_res:
                     related_video_id = x.clicked_video
@@ -176,12 +176,12 @@ def search_util(search_query):
                 inc += len(q) * 20
             total_score += inc
         sorted_results.append([total_score, results[key], key])
-    if session["user_name"]:
+    if session.get("user_name"):
         temp_res = {}
         for x in sorted_results:
             temp_res[x[1]["id"]] = {"0": x[0], "1": x[1]}
         log_res = SearchLog.query.filter_by(
-            user_name=session["user_name"],
+            user_name=session.get("user_name"),
             search_query=search_query).all()
         for x in log_res:
             related_video_id = x.clicked_video
@@ -194,8 +194,9 @@ def search_util(search_query):
 
 @routes_module.route('/log/video', methods=["POST"])
 def add_video_log():
+    user_name = session.get('user_name') or "anon"
     if request.method == "POST":
-        new_log = VideoLog(session['user_name'],
+        new_log = VideoLog(user_name,
                       request.form['clicked_video'],
                       request.form['current_video'])
         log_data = repr(new_log)
@@ -210,8 +211,9 @@ def add_video_log():
 
 @routes_module.route('/log/search', methods=["POST"])
 def add_search_log():
+    user_name = session.get('user_name') or "anon"
     if request.method == "POST":
-        new_log = SearchLog(session['user_name'],
+        new_log = SearchLog(user_name,
                       request.form['clicked_video'],
                       request.form['search_query'])
         log_data = repr(new_log)
