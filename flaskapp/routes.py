@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, jsonify
+from flask import Blueprint, request, render_template, jsonify, redirect, url_for
 from bson.objectid import ObjectId
 from py2neo import Graph
 import flaskapp.config as config
@@ -62,13 +62,25 @@ def video_page(video_id):
 def login_page():
     if request.method == 'GET':
         return render_template('login.html')
+    elif request.method == 'POST':
+        form_data = request.form
+        if valid_login(form_data['user_name'], form_data['user_pass']):
+            return redirect(url_for('/'))
 
 
 # Sign Up page
-@routes_module.route('/signup', methods=["GET"])
+@routes_module.route('/signup', methods=["GET", "POST"])
 def signup_page():
     if request.method == 'GET':
         return render_template('signup.html')
+    elif request.method == 'POST':
+        form_data = request.form
+        user_name = form_data['user_name']
+        user_name = form_data['user_pass']
+        if user_name and user_pass:
+            return create_user(user_name, user_pass)
+        else:
+            return jsonify({'error': 'User Exists'})
 
 
 # Utility function to make document array from cursor
@@ -126,18 +138,15 @@ def add_search_log():
             return jsonify(log_data)
 
 
-@routes_module.route('/create_user', methods=["POST"])
-def create_user():
-    if request.method == "POST":
-        new_user = User(request.form['user_name'],
-                        request.form['user_pass'])
-        try:
-            mysql.session.add(new_user)
-            mysql.session.commit()
-        except Exception as e:
-            return jsonify({'error': e})
-        else:
-            return jsonify({'response': 'Success'})
+def create_user(user_name, user_pass):
+    new_user = User(user_name, user_pass)
+    try:
+        mysql.session.add(new_user)
+        mysql.session.commit()
+    except Exception as e:
+        return jsonify({'error': e})
+    else:
+        return jsonify({'response': 'Success'})
 
 
 def valid_login(user_name, user_pass):
