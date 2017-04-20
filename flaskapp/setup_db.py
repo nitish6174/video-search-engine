@@ -2,11 +2,14 @@ import os
 import sys
 import json
 import sqlalchemy as sql
+
+from sqlalchemy_utils import database_exists, create_database
 from pymongo import MongoClient
 from py2neo import authenticate, Graph, Node, Relationship
+
 import flaskapp.config as config
 
-data_file_folder = "./data/"
+data_file_folder = os.path.abspath(config.data_folder)
 
 
 # Main function
@@ -43,6 +46,8 @@ def read_data_files():
 # Define schema for MySQL
 def setup_mysql_db(video_data):
     db = connect_to_db("mysql")
+    if not database_exists(db.url):
+        create_database(db.url)
     # Define schema
     print("MySQL setup completed")
     print("-" * 40)
