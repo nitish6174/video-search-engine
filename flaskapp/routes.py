@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, jsonify, redirect, url_for
+from flask import Blueprint, request, render_template, jsonify, redirect, url_for, session
 from bson.objectid import ObjectId
 from py2neo import Graph
 import flaskapp.config as config
@@ -67,14 +67,17 @@ def video_page(video_id):
 
 
 # Login page
-@routes_module.route('/login', methods=["GET"])
+@routes_module.route('/login', methods=["GET", "POST"])
 def login_page():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
         form_data = request.form
         if valid_login(form_data['user_name'], form_data['user_pass']):
-            return redirect(url_for('/'))
+            session["user_name"] = form_data['user_name']
+            return redirect('/')
+        else:
+            return render_template("error.html", message = "Invalid user")
 
 
 # Sign Up page
@@ -85,12 +88,27 @@ def signup_page():
     elif request.method == 'POST':
         form_data = request.form
         user_name = form_data['user_name']
-        user_name = form_data['user_pass']
+        user_pass = form_data['user_pass']
+        confirm_user_pass = form_data['confirm_user_pass']
+        if(user_pass != confirm_user_pass):
+            return render_template('error.html', message = "Passwords do not match")
         if user_name and user_pass:
-            return create_user(user_name, user_pass)
+            res = create_user(user_name, user_pass)
+            if(res == "Success"):
+                session["user_name"] = user_name
+                return redirect(url_for("/"))
+            else:
+                return render_template("error.html", message = res)
         else:
-            return jsonify({'error': 'User Exists'})
+            return render_template('error.html', message = "All the fields are necessary")
 
+
+# Logout page
+@routes_module.route('/logout', methods=["GET"])
+def logout_page():
+    if request.method == "GET":
+        session.pop('user_name', None)
+        return redirect('/')
 
 # Utility function to make document array from cursor
 def doc_list(doc_cursor):
@@ -126,7 +144,7 @@ def add_video_log():
             mysql.session.add(new_log)
             mysql.session.commit()
         except Exception as e:
-            return jsonify({'error': e})
+            return jsonify({'error': str(e)})
         else:
             return jsonify(log_data)
 
@@ -142,7 +160,7 @@ def add_search_log():
             mysql.session.add(new_log)
             mysql.session.commit()
         except Exception as e:
-            return jsonify({'error': e})
+            return jsonify({'error': str(e)})
         else:
             return jsonify(log_data)
 
@@ -153,12 +171,13 @@ def create_user(user_name, user_pass):
         mysql.session.add(new_user)
         mysql.session.commit()
     except Exception as e:
-        return jsonify({'error': e})
+        return "User already exists"
     else:
-        return jsonify({'response': 'Success'})
+        return "Success"
 
 
 def valid_login(user_name, user_pass):
+    print(user_name, user_pass)
     query = mysql.session.query(User)
-    return query.filter(and_(User.user_name == user_name,
-                             User.user_pass == user_pass)).count()
+    return bool(query.filter(and_(User.user_name == user_name,
+                             User.user_pass == user_pass)).count())

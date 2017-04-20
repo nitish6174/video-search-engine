@@ -10,6 +10,7 @@ from flaskapp.routes import routes_module
 
 # Initialize and configure app
 app = Flask(__name__)
+app.secret_key = "Sab bik chuke hain"
 
 # Static assets
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = config.static_file_max_age
