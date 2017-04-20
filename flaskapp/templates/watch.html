@@ -32,8 +32,6 @@
             <div class="embed-responsive embed-responsive-16by9">
               <iframe class="embed-responsive-item" src="http://youtube.com/embed/{{display_video['id']}}" ></iframe>
             </div>
-
-
             <div class="page-box" id="watchVideoInfo">
                 <div class="page-box-content">
                     <div class="row">
@@ -50,7 +48,13 @@
                                     </h5>
                                     <h5>{{ display_video['statistics']['commentCount'] }} comments</h5>
                                 </div>
-                                <h4>Published by : {{ display_video['snippet']['channelTitle'] }}</h4>
+                                <div>
+                                    <div class="channel-avatar"><img src="https://i.ytimg.com/i/{{display_video['snippet']['channelId']}}/1.jpg" alt="{{ display_video['snippet']['channelTitle'] }}"></div>
+                                    <div class="channel-name">{{ display_video['snippet']['channelTitle'] }}</div>
+                                </div>
+                                <br><br>
+                                {% set date = display_video['snippet']['publishedAt'][:10] %}
+                                <div class="publish-date"><strong>Published on :</strong> {{ date }}</div>
                             </div>
                             <hr>
                             {% set description = (display_video['snippet']['description']).split('\n') %}
@@ -73,7 +77,7 @@
                     <div class="row">
                     {% for x in related_videos %}
                         <div class="bottom-gap">
-                        <a href="/watch/{{ x['id'] }}" class="relvid" name="{{x['id']}}">
+                        <a href="/watch/{{ x['id'] }}" class="related-video" name="{{x['id']}}">
                             <div class="col-xs-4 text-center">
                                 {% set url = x['snippet']['thumbnails']['high']['url'] %}
                                 <img src="{{ url }}">
@@ -100,5 +104,5 @@
 
 {# Scripts block #}
 {% block scripts %}
-<iframe width="854" height="480" src="https://www.youtube.com/embed/hIC9ASK0IbA" frameborder="0" allowfullscreen></iframe>
+
 {% endblock %}

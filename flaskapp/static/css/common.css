@@ -30,6 +30,10 @@ body {
     display: flex;
     flex-direction: column; }
 
+/* Input */
+input.form-control:focus {
+  box-shadow: none; }
+
 /* Page box styling */
 .page-box {
   background-color: #fff;
@@ -44,3 +48,6 @@ body {
     padding: 20px; }
   .page-box img {
     width: 90%; }
+  .page-box .video-thumbnail-title {
+    margin-top: 5px;
+    font-weight: 700; }

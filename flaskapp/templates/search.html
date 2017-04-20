@@ -27,7 +27,7 @@
 
 <div class="container">
 
-    <div class="page-box" id="topVideosBox">
+    <div class="page-box" id="searchResultsBox">
         <div class="page-box-title">Search results for : {{ query }}</div>
         <div class="page-box-content">
             <div class="row row-eq-height">
@@ -57,6 +57,7 @@
 {# Scripts block #}
 {% block scripts %}
 
-<script type="text/javascript">query = "{{query}}";</script>
+query = "{{query}}";
+$("#searchInput").val(query);
 
 {% endblock %}

@@ -4,6 +4,10 @@ $("#searchForm").submit(function(e){
     return false;
 });
 
+$("#searchSubmit").click(function() {
+    searchInput();
+});
+
 function searchInput()
 {
     val = $("#searchInput").val();

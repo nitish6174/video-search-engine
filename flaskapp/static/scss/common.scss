@@ -48,7 +48,14 @@ body {
 }
 
 
+/* Input */
+
+input.form-control:focus {
+    box-shadow: none;
+}
+
 /* Page box styling */
+
 .page-box {
     background-color: #fff;
     box-shadow: $drop-shadow;
@@ -67,5 +74,10 @@ body {
 
     img {
         width: 90%;
+    }
+
+    .video-thumbnail-title {
+        margin-top: 5px;
+        font-weight: 700;
     }
 }
