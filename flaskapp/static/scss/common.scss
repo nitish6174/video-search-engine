@@ -32,6 +32,22 @@ body {
 }
 
 
+/* Bootstrap mods */
+
+.row.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+    flex-wrap: wrap;
+
+    [class*='col-'] {
+      display: flex;
+      flex-direction: column;
+    }
+}
+
+
 /* Page box styling */
 .page-box {
     background-color: #fff;

@@ -30,7 +30,7 @@
     <div class="page-box" id="topVideosBox">
         <div class="page-box-title">Top videos</div>
         <div class="page-box-content">
-            <div class="row">
+            <div class="row row-eq-height">
             {% for x in top_videos %}
                 <div class="col-lg-3 col-sm-4 text-center">
                     {% set url = x['snippet']['thumbnails']['high']['url'] %}

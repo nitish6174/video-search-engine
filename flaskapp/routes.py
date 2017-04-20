@@ -1,8 +1,7 @@
-import re
-import json
 from urllib import parse
 
-from flask import Blueprint, request, render_template, jsonify, redirect, session
+from flask import Blueprint, request, render_template, \
+    jsonify, redirect, session
 from bson.objectid import ObjectId
 from py2neo import Graph
 from sqlalchemy import and_
@@ -19,8 +18,9 @@ routes_module = Blueprint('routes_module', __name__)
 def home_page():
     if request.method == 'GET':
         mongo_db = mongo.db
-        top_videos = list(mongo_db.videos.find()
-                              .sort("statistics.viewCount", -1).limit(12))
+        top_videos = list(
+            mongo_db.videos.find().sort("statistics.viewCount", -1).limit(12)
+        )
         return render_template('home.html', top_videos=top_videos)
 
 
@@ -30,10 +30,11 @@ def video_page(video_id):
     if request.method == 'GET':
         mongo_db = mongo.db
         disp_video = mongo_db.videos.find_one({"id": video_id})
-        mongo_db.videos.update_one({'id': video_id}, {'$inc': {
-            'statistics.viewCount': 1
-          }
-        }, upsert=False)
+        mongo_db.videos.update_one(
+            {'id': video_id},
+            {'$inc': {'statistics.viewCount': 1}},
+            upsert=False
+        )
         if disp_video is not None:
             neo4j_db = Graph(user=config.neo4j_user,
                              password=config.neo4j_pass)
@@ -187,7 +188,10 @@ def search_util(search_query):
             related_video_id = x.clicked_video
             if related_video_id in temp_res:
                 temp_res[related_video_id]["0"] += 5
-        sorted_results = [[temp_res[x]["0"], temp_res[x]["1"]] for x in temp_res]
+        sorted_results = [
+            [temp_res[x]["0"], temp_res[x]["1"]]
+            for x in temp_res
+        ]
     sorted_results.sort(key=lambda x: x[0], reverse=True)
     return [x[1] for x in sorted_results]
 
@@ -197,8 +201,8 @@ def add_video_log():
     user_name = session.get('user_name') or "anon"
     if request.method == "POST":
         new_log = VideoLog(user_name,
-                      request.form['clicked_video'],
-                      request.form['current_video'])
+                           request.form['clicked_video'],
+                           request.form['current_video'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)
@@ -214,8 +218,8 @@ def add_search_log():
     user_name = session.get('user_name') or "anon"
     if request.method == "POST":
         new_log = SearchLog(user_name,
-                      request.form['clicked_video'],
-                      request.form['search_query'])
+                            request.form['clicked_video'],
+                            request.form['search_query'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)

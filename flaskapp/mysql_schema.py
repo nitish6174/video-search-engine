@@ -14,7 +14,6 @@ class User(db.Model):
         return "User %r" % self.user_name
 
 
-
 class VideoLog(db.Model):
     timestamp = db.Column(db.DateTime, primary_key=True)
     user_name = db.Column(db.String(30), primary_key=True)
@@ -47,5 +46,5 @@ class SearchLog(db.Model):
 
     def __repr__(self):
         return "SearchLog %r User %r search_query %r" % (self.timestamp,
-                                                  self.user_name,
-                                                  self.search_query)
+                                                         self.user_name,
+                                                         self.search_query)
