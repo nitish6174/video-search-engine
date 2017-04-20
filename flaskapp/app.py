@@ -1,5 +1,3 @@
-import subprocess
-
 import click
 from flask import Flask
 from flask_compress import Compress
@@ -9,7 +7,6 @@ import flaskapp.config as config
 import flaskapp.shared_variables as var
 from flaskapp.assets import getAssets
 from flaskapp.routes import routes_module
-from flaskapp.setup_db import main as init_db
 
 # Initialize and configure app
 app = Flask(__name__)
@@ -39,6 +36,11 @@ app.register_blueprint(routes_module)
 
 @app.cli.command()
 def create_db():
+    # Only import if create_db called
+    from flaskapp.setup_db import main as init_db
+    # All the regsitered Pclasses must be imported to
+    # create tables with the call to create_all
+    from flaskapp.mysql_schema import User
     init_db()
     var.mysql.create_all()
     click.echo('Creating DB')
