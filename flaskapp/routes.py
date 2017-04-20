@@ -148,9 +148,9 @@ def doc_list(doc_cursor):
 @routes_module.route('/log/video', methods=["POST"])
 def add_video_log():
     if request.method == "POST":
-        new_log = VideoLog(request.form['user_name'],
-                           request.form['clicked_video'],
-                           request.form['current_video'])
+        new_log = VideoLog(session['user_name'],
+                      request.form['clicked_video'],
+                      request.form['current_video'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)
@@ -164,9 +164,9 @@ def add_video_log():
 @routes_module.route('/log/search', methods=["POST"])
 def add_search_log():
     if request.method == "POST":
-        new_log = SearchLog(request.form['user_name'],
-                            request.form['clicked_video'],
-                            request.form['query'])
+        new_log = SearchLog(session['user_name'],
+                      request.form['clicked_video'],
+                      request.form['query'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)

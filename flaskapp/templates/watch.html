@@ -72,7 +72,7 @@
                     <div class="row">
                     {% for x in related_videos %}
                         <div class="bottom-gap">
-                        <a href="/watch/{{ x['id'] }}">
+                        <a href="/watch/{{ x['id'] }}" class="relvid" name="{{x['id']}}">
                             <div class="col-xs-4 text-center">
                                 {% set url = x['snippet']['thumbnails']['high']['url'] %}
                                 <img src="{{ url }}">
@@ -100,5 +100,6 @@
 
 {# Scripts block #}
 {% block scripts %}
+<script type="text/javascript">currentVideo = "{{ display_video['id'] }}";</script>
 
 {% endblock %}
