@@ -18,7 +18,7 @@ routes_module = Blueprint('routes_module', __name__)
 def home_page():
     if request.method == 'GET':
         mongo_db = mongo.db
-        top_videos = doc_list(mongo_db.videos.find()
+        top_videos = list(mongo_db.videos.find()
                               .sort("statistics.viewCount", -1).limit(12))
         return render_template('home.html', top_videos=top_videos)
 
@@ -59,7 +59,7 @@ def video_page(video_id):
             related_nodes.sort(key=lambda x: x["weight"], reverse=True)
             related_nodes = related_nodes[:20]
             mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
-            related_videos = doc_list(mongo_db.videos.find({
+            related_videos = list(mongo_db.videos.find({
                 "_id": {"$in": mongo_ids}
             }))
             return render_template('watch.html',
@@ -138,14 +138,21 @@ def logout_page():
 # Utility function to search
 def search_util(query):
     mongo_db = mongo.db
-    regx = re.compile(query, re.IGNORECASE)
-    res = doc_list(mongo_db.videos.find({"snippet.title": regx}))
-    return res
-
-
-# Utility function to make document array from cursor
-def doc_list(doc_cursor):
-    return [x for x in doc_cursor]
+    res = list(mongo_db.videos.find({}))
+    results = dict([(x['snippet']['title'].lower(), x) for x in res])
+    queries = query.lower().split()
+    sorted_results = []
+    from fuzzywuzzy import fuzz
+    for key in results:
+        total_score = 0
+        for q in queries:
+            inc = fuzz.partial_ratio(q, key)
+            if inc == 100:
+                inc += len(q)*20
+            total_score += inc
+        sorted_results.append([total_score, results[key], key])
+    sorted_results.sort(key=lambda x: x[0], reverse=True)
+    return [x[1] for x in sorted_results]
 
 
 @routes_module.route('/log/video', methods=["POST"])
