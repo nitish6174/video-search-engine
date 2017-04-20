@@ -1,8 +1,9 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, jsonify
 from bson.objectid import ObjectId
 from py2neo import Graph
 import flaskapp.config as config
 from flaskapp.shared_variables import *
+from flaskapp.mysql_schema import User, Log
 
 routes_module = Blueprint('routes_module', __name__)
 
@@ -90,3 +91,33 @@ def test_db(mysql_db, mongo_db, neo4j_db):
     print(temp)
     # s = "MATCH ()-[r]->() RETURN count(r)"
     # print(neo4j_db.evaluate(statement=s))
+
+
+@routes_module.route('/log', methods=["POST"])
+def add_log():
+    if request.method == "POST":
+        new_log = Log(request.form['user_name'],
+                      request.form['current_video'],
+                      request.form['clicked_video'])
+        log_data = new_log.data()
+        try:
+            mysql.session.add(new_log)
+            mysql.session.commit()
+        except Exception as e:
+            return jsonify({'error': e})
+        else:
+            return jsonify(log_data)
+
+
+@routes_module.route('/create_user', methods=["POST"])
+def create_user():
+    if request.method == "POST":
+        new_user = User(request.form['user_name'],
+                        request.form['user_pass'])
+        try:
+            mysql.session.add(new_user)
+            mysql.session.commit()
+        except Exception as e:
+            return jsonify({'error': e})
+        else:
+            return jsonify({'response': 'Success'})
