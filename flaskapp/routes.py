@@ -29,6 +29,10 @@ def video_page(video_id):
     if request.method == 'GET':
         mongo_db = mongo.db
         disp_video = mongo_db.videos.find_one({"id": video_id})
+        mongo_db.videos.update_one({'id': video_id}, {'$inc': {
+            'statistics.viewCount': 1
+          }
+        }, upsert=False)
         if disp_video is not None:
             neo4j_db = Graph(user=config.neo4j_user,
                              password=config.neo4j_pass)
