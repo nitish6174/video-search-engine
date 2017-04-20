@@ -1,11 +1,11 @@
-<div class="container" id="searchBar">
+<div class="container" id="searchBar" onsubmit="searchInput();">
     <form id="searchForm">
     <div class="row">
         <div class="col-xs-12">
             <div class="input-group">
-                <input type="text" class="form-control corner" placeholder="Search videos">
+                <input type="text" class="form-control corner" id="searchInput" placeholder="Search videos">
                 <span class="input-group-btn">
-                <button class="btn btn-primary corner" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                <button class="btn btn-primary corner" type="button" id="searchSubmit"><i class="glyphicon glyphicon-search"></i></button>
                 </span>
             </div>
         </div>

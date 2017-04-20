@@ -1,10 +1,13 @@
-from flask import Blueprint, request, render_template, jsonify, redirect, url_for, session
+import re
+
+from flask import Blueprint, request, render_template, jsonify, redirect, session
 from bson.objectid import ObjectId
 from py2neo import Graph
+from sqlalchemy import and_
+
 import flaskapp.config as config
 from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import User, VideoLog, SearchLog
-from sqlalchemy import and_
 
 routes_module = Blueprint('routes_module', __name__)
 
@@ -66,6 +69,22 @@ def video_page(video_id):
                                    message="Requested video not found")
 
 
+# Search results page
+@routes_module.route('/search/<query>/', methods=["GET"])
+def search_results_page(query):
+    if request.method == 'GET':
+        res = search_util(query)
+        return render_template('search.html', results=res)
+
+
+# Search for a query
+@routes_module.route('/search/', methods=["POST"])
+def search_bar(query):
+    if request.method == 'POST':
+        res = search_util(query)
+        return jsonify(res)
+
+
 # Login page
 @routes_module.route('/login', methods=["GET", "POST"])
 def login_page():
@@ -77,7 +96,7 @@ def login_page():
             session["user_name"] = form_data['user_name']
             return redirect('/')
         else:
-            return render_template("error.html", message = "Invalid user")
+            return render_template("error.html", message="Invalid user")
 
 
 # Sign Up page
@@ -91,16 +110,18 @@ def signup_page():
         user_pass = form_data['user_pass']
         confirm_user_pass = form_data['confirm_user_pass']
         if(user_pass != confirm_user_pass):
-            return render_template('error.html', message = "Passwords do not match")
+            return render_template('error.html',
+                                   message="Passwords do not match")
         if user_name and user_pass:
             res = create_user(user_name, user_pass)
             if(res == "Success"):
                 session["user_name"] = user_name
-                return redirect(url_for("/"))
+                return redirect("/")
             else:
-                return render_template("error.html", message = res)
+                return render_template("error.html", message=res)
         else:
-            return render_template('error.html', message = "All the fields are necessary")
+            return render_template('error.html',
+                                   message="All the fields are necessary")
 
 
 # Logout page
@@ -110,35 +131,26 @@ def logout_page():
         session.pop('user_name', None)
         return redirect('/')
 
+
+# Utility function to search
+def search_util(query):
+    mongo_db = mongo.db
+    regx = re.compile(query, re.IGNORECASE)
+    res = doc_list(mongo_db.videos.find({"snippet.title": regx}))
+    return res
+
+
 # Utility function to make document array from cursor
 def doc_list(doc_cursor):
     return [x for x in doc_cursor]
-
-
-# mysql_db = mysql
-# mongo_db = mongo.db
-# neo4j_db = Graph(user=config.neo4j_user,password=config.neo4j_pass)
-# test_db(mysql_db,mongo_db,neo4j_db)
-
-def test_db(mysql_db, mongo_db, neo4j_db):
-    # MySQL
-    # print(User.query.limit(1).all())
-    # MongoDB
-    count = mongo_db.videos.count({})
-    print(count)
-    # Neo4j
-    temp = neo4j_db.find_one(config.neo4j_name)
-    print(temp)
-    # s = "MATCH ()-[r]->() RETURN count(r)"
-    # print(neo4j_db.evaluate(statement=s))
 
 
 @routes_module.route('/log/video', methods=["POST"])
 def add_video_log():
     if request.method == "POST":
         new_log = VideoLog(request.form['user_name'],
-                      request.form['clicked_video'],
-                      request.form['current_video'])
+                           request.form['clicked_video'],
+                           request.form['current_video'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)
@@ -153,8 +165,8 @@ def add_video_log():
 def add_search_log():
     if request.method == "POST":
         new_log = SearchLog(request.form['user_name'],
-                      request.form['clicked_video'],
-                      request.form['query'])
+                            request.form['clicked_video'],
+                            request.form['query'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)
@@ -170,14 +182,13 @@ def create_user(user_name, user_pass):
     try:
         mysql.session.add(new_user)
         mysql.session.commit()
-    except Exception as e:
+    except:
         return "User already exists"
     else:
         return "Success"
 
 
 def valid_login(user_name, user_pass):
-    print(user_name, user_pass)
     query = mysql.session.query(User)
     return bool(query.filter(and_(User.user_name == user_name,
                              User.user_pass == user_pass)).count())

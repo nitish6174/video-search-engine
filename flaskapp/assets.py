@@ -14,6 +14,7 @@ def getAssets():
         'common_js': Bundle(
             'js/ext/jquery.min.js',
             'js/ext/bootstrap.min.js',
+            'js/common.js',
             output='public/common.%(version)s.js',
             filters='jsmin'),
 
