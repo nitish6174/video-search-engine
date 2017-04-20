@@ -29,19 +29,28 @@ def video_page(video_id):
             neo4j_db = Graph(user=config.neo4j_user,
                              password=config.neo4j_pass)
             source_node = neo4j_db.find_one("Video", "videoId", video_id)
-            common_tag_edges = [
+            rel_edges = [
                 rel for rel in
                 neo4j_db.match(
-                    start_node=source_node,
-                    rel_type="CommonTags"
+                    start_node=source_node
                 )
             ]
+            edge_end_nodes = {}
+            for x in rel_edges:
+                if x.type() == "SameChannel":
+                    weight = 5
+                elif x.type() == "CommonTags":
+                    weight = 3 * x["weight"]
+                elif x.type() == "CommonDesc":
+                    weight = x["weight"]
+                mongo_id = (x.end_node())["mongoId"]
+                if mongo_id in edge_end_nodes:
+                    edge_end_nodes[mongo_id] += weight
+                else:
+                    edge_end_nodes[mongo_id] = weight
             related_nodes = [
-                {
-                    "mongoId": (x.end_node())["mongoId"],
-                    "weight": x["weight"]
-                }
-                for x in common_tag_edges
+                {"mongoId": x, "weight": edge_end_nodes[x]}
+                for x in edge_end_nodes
             ]
             related_nodes.sort(key=lambda x: x["weight"], reverse=True)
             related_nodes = related_nodes[:10]

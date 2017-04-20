@@ -13,6 +13,12 @@ body {
 .bottom-gap {
   margin-bottom: 20px; }
 
+.video-link, .video-link:hover {
+  text-decoration: none; }
+
+.text-sm {
+  font-size: 0.8em; }
+
 /* Page box styling */
 .page-box {
   background-color: #fff;
