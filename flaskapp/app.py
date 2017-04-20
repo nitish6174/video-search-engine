@@ -40,7 +40,7 @@ def create_db():
     from flaskapp.setup_db import main as init_db
     # All the regsitered Pclasses must be imported to
     # create tables with the call to create_all
-    from flaskapp.mysql_schema import User, Log
+    from flaskapp.mysql_schema import User, VideoLog, SearchLog
     # init_db()
     var.mysql.create_all()
     click.echo('Creating DB')

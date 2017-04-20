@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from py2neo import Graph
 import flaskapp.config as config
 from flaskapp.shared_variables import *
-from flaskapp.mysql_schema import User, Log
+from flaskapp.mysql_schema import User, VideoLog, SearchLog
 
 routes_module = Blueprint('routes_module', __name__)
 
@@ -93,13 +93,29 @@ def test_db(mysql_db, mongo_db, neo4j_db):
     # print(neo4j_db.evaluate(statement=s))
 
 
-@routes_module.route('/log', methods=["POST"])
-def add_log():
+@routes_module.route('/log/video', methods=["POST"])
+def add_video_log():
     if request.method == "POST":
-        new_log = Log(request.form['user_name'],
-                      request.form['current_video'],
-                      request.form['clicked_video'])
-        log_data = new_log.data()
+        new_log = VideoLog(request.form['user_name'],
+                      request.form['clicked_video'],
+                      request.form['current_video'])
+        log_data = repr(new_log)
+        try:
+            mysql.session.add(new_log)
+            mysql.session.commit()
+        except Exception as e:
+            return jsonify({'error': e})
+        else:
+            return jsonify(log_data)
+
+
+@routes_module.route('/log/search', methods=["POST"])
+def add_search_log():
+    if request.method == "POST":
+        new_log = SearchLog(request.form['user_name'],
+                      request.form['clicked_video'],
+                      request.form['query'])
+        log_data = repr(new_log)
         try:
             mysql.session.add(new_log)
             mysql.session.commit()
