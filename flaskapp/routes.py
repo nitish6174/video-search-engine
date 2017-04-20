@@ -160,11 +160,12 @@ def logout_page():
 
 
 # Utility function to search
-def search_util(query):
+def search_util(search_query):
     mongo_db = mongo.db
     res = list(mongo_db.videos.find({}))
     results = dict([(x['snippet']['title'].lower(), x) for x in res])
-    queries = query.lower().split()
+    # print(json.dumps(results,indent=4))
+    queries = search_query.lower().split()
     sorted_results = []
     from fuzzywuzzy import fuzz
     for key in results:
@@ -172,9 +173,21 @@ def search_util(query):
         for q in queries:
             inc = fuzz.partial_ratio(q, key)
             if inc == 100:
-                inc += len(q)*20
+                inc += len(q) * 20
             total_score += inc
         sorted_results.append([total_score, results[key], key])
+    if session["user_name"]:
+        temp_res = {}
+        for x in sorted_results:
+            temp_res[x[1]["id"]] = {"0": x[0], "1": x[1]}
+        log_res = SearchLog.query.filter_by(
+            user_name=session["user_name"],
+            search_query=search_query).all()
+        for x in log_res:
+            related_video_id = x.clicked_video
+            if related_video_id in temp_res:
+                temp_res[related_video_id]["0"] += 5
+        sorted_results = [[temp_res[x]["0"], temp_res[x]["1"]] for x in temp_res]
     sorted_results.sort(key=lambda x: x[0], reverse=True)
     return [x[1] for x in sorted_results]
 
@@ -200,7 +213,7 @@ def add_search_log():
     if request.method == "POST":
         new_log = SearchLog(session['user_name'],
                       request.form['clicked_video'],
-                      request.form['query'])
+                      request.form['search_query'])
         log_data = repr(new_log)
         try:
             mysql.session.add(new_log)

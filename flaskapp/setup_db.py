@@ -16,8 +16,8 @@ data_file_folder = os.path.abspath(config.data_folder)
 def main():
     video_data = read_data_files()
     setup_mysql_db(video_data)
-    mongo_ids = setup_mongo_db(video_data)
-    setup_neo4j_db(video_data, mongo_ids)
+    # mongo_ids = setup_mongo_db(video_data)
+    # setup_neo4j_db(video_data, mongo_ids)
 
 
 # Store videoInfo from data files into an array

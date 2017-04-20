@@ -36,16 +36,16 @@ class VideoLog(db.Model):
 class SearchLog(db.Model):
     timestamp = db.Column(db.DateTime, primary_key=True)
     user_name = db.Column(db.String(30), primary_key=True)
-    query = db.Column(db.String(3000))
+    search_query = db.Column(db.String(300))
     clicked_video = db.Column(db.String(30))
 
-    def __init__(self, user_name, clicked_video, query):
+    def __init__(self, user_name, clicked_video, search_query):
         self.timestamp = datetime.datetime.now()
         self.user_name = user_name
         self.clicked_video = clicked_video
-        self.query = query
+        self.search_query = search_query
 
     def __repr__(self):
-        return "SearchLog %r User %r Query %r" % (self.timestamp,
+        return "SearchLog %r User %r search_query %r" % (self.timestamp,
                                                   self.user_name,
-                                                  self.query)
+                                                  self.search_query)
