@@ -4,6 +4,7 @@ from py2neo import Graph
 import flaskapp.config as config
 from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import User, VideoLog, SearchLog
+from sqlalchemy import and_
 
 routes_module = Blueprint('routes_module', __name__)
 
@@ -137,3 +138,9 @@ def create_user():
             return jsonify({'error': e})
         else:
             return jsonify({'response': 'Success'})
+
+
+def valid_login(user_name, user_pass):
+    query = mysql.session.query(User)
+    return query.filter(and_(User.user_name == user_name,
+                             User.user_pass == user_pass)).count()
