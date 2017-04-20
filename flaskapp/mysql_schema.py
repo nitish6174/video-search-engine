@@ -1,4 +1,4 @@
-from shared_variables import mysql as db
+from .shared_variables import mysql as db
 
 
 class User(db.Model):

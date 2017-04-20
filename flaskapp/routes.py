@@ -1,8 +1,8 @@
 from flask import Blueprint, request, render_template
 from bson.objectid import ObjectId
 from py2neo import Graph
-import config
-from shared_variables import *
+import flaskapp.config as config
+from flaskapp.shared_variables import *
 
 routes_module = Blueprint('routes_module', __name__)
 

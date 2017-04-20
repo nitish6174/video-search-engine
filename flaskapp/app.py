@@ -1,11 +1,14 @@
+import click
+
 from flask import Flask
 from flask_compress import Compress
 from flask_assets import Environment
 
-import config
-import shared_variables as var
-from assets import getAssets
-from routes import routes_module
+import flaskapp.config as config
+import flaskapp.shared_variables as var
+from flaskapp.assets import getAssets
+from flaskapp.routes import routes_module
+from flaskapp.setup_db import main as init_db
 
 # Initialize and configure app
 app = Flask(__name__)
@@ -31,6 +34,14 @@ var.mongo.init_app(app, config_prefix='MONGO')
 
 # Blueprint routes
 app.register_blueprint(routes_module)
+
+
+@app.cli.command()
+def create_db():
+    init_db()
+    var.mysql.create_all()
+    click.echo('Creating DB')
+
 
 # Run app
 if __name__ == '__main__':
