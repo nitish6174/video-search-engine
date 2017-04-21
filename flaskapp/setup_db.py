@@ -94,9 +94,9 @@ def connect_to_db(db_type):
             # db_conn = MySQLdb.connect(user=config.mysql_user, \
             #                           passwd=config.mysql_pass).cursor()
         elif db_type == "mongo":
-            db_conn = MongoClient('localhost', 27017)[config.mongo_name]
+            db_conn = MongoClient("localhost", 27017)[config.mongo_name]
         elif db_type == "neo4j":
-            authenticate('localhost:7474',
+            authenticate("localhost:7474",
                          config.neo4j_user, config.neo4j_pass)
             db_conn = Graph()
             # db_conn = Graph(user=config.neo4j_user,
@@ -165,7 +165,7 @@ def commonTagCount(x, y):
 
 # Find no of common words b/w 2 videos
 def commonDescription(x, y):
-    reject_list = set([line.rstrip('\n') for line in open("common_words.txt")])
+    reject_list = set([line.rstrip("\n") for line in open("common_words.txt")])
     desc1 = wordsInDescription(x["description"])
     desc2 = wordsInDescription(y["description"])
     common_set = (desc1 & desc2) - (reject_list)

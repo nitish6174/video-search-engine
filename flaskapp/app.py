@@ -16,7 +16,7 @@ app = Flask(__name__)
 app.secret_key = "Sab bik chuke hain"
 
 # Static assets
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = config.static_file_max_age
+app.config["SEND_FILE_MAX_AGE_DEFAULT"] = config.static_file_max_age
 assets = Environment(app)
 assets.register(getAssets())
 
@@ -24,15 +24,15 @@ assets.register(getAssets())
 Compress(app)
 
 # MySQL with SQLAlchemy
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 url = "mysql://" + config.mysql_user + ":" + config.mysql_pass \
       + "@" + "localhost:3306/" + config.mysql_name
-app.config['SQLALCHEMY_DATABASE_URI'] = url
+app.config["SQLALCHEMY_DATABASE_URI"] = url
 var.mysql.init_app(app)
 
 # MongoDB
-app.config['MONGO_DBNAME'] = config.mongo_name
-var.mongo.init_app(app, config_prefix='MONGO')
+app.config["MONGO_DBNAME"] = config.mongo_name
+var.mongo.init_app(app, config_prefix="MONGO")
 
 # Blueprint routes
 app.register_blueprint(routes_module)
@@ -45,15 +45,15 @@ def create_db(mode):
     from flaskapp.setup_db import main as init_db
     from flaskapp.mysql_schema import User, VideoLog, SearchLog
     if mode % 2 == 1:
-        click.echo('Running database setup script . . .')
+        click.echo("Running database setup script . . .")
         init_db()
     if mode > 1:
-        click.echo('Initializing MySQL models . . .')
+        click.echo("Initializing MySQL models . . .")
         var.mysql.create_all()
     if mode > 0:
-        click.echo('Database setup done!')
+        click.echo("Database setup done!")
     else:
-        click.echo('USAGE : flask create_db --mode <1/2/3>')
+        click.echo("USAGE : flask create_db --mode <1/2/3>")
 
 
 # Click command for scaffolding
@@ -77,13 +77,13 @@ def scaffold(page):
         # Copy template file
         shutil.copyfile(template_in, template_out)
         # Make new css and js file for this page
-        open(scss_out, 'w').close()
-        open(js_out, 'w').close()
+        open(scss_out, "w").close()
+        open(js_out, "w").close()
         # Set css and js import file names in template file
         with open(template_out) as f:
             text = f.read()
-        text = text.replace('page_css', page + '_css')
-        text = text.replace('page_js', page + '_js')
+        text = text.replace("page_css", page + "_css")
+        text = text.replace("page_js", page + "_js")
         with open(template_out, "w") as f:
             f.write(text)
         click.echo("Done!")
@@ -101,5 +101,5 @@ def scaffold(page):
 
 
 # Run app
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")

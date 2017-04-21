@@ -27,11 +27,13 @@
 
 <div class="container">
 
-    <div class="page-box" id="topVideosBox">
-        <div class="page-box-title">Top videos</div>
+    {% for list in lists %}
+    {% if list["video_list"]|length > 0 %}
+    <div class="page-box video-list-box">
+        <div class="page-box-title">{{ list["list_title"] }}</div>
         <div class="page-box-content">
             <div class="row row-eq-height">
-            {% for x in top_videos %}
+            {% for x in list["video_list"] %}
                 <div class="col-lg-3 col-sm-4 text-center">
                     {% set channel_id = x['snippet']['channelId'] %}
                     {% set channel_name = x['snippet']['channelTitle'] %}
@@ -51,6 +53,8 @@
             </div>
         </div>
     </div>
+    {% endif %}
+    {% endfor %}
 
 </div>
 
