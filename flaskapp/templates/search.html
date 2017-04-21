@@ -28,10 +28,16 @@
 <div class="container">
 
     <div class="page-box" id="searchResultsBox">
-        <div class="page-box-title">Search results for : {{ query }}</div>
-        <div class="page-box-content">
+        <div class="page-box-nav">
+        Search results for : {{ query }}
+        <div class="tab-bar">
+            <div class="tab active" data-tab-group="search-results" data-target="videoResults">Videos</div>
+            <div class="tab" data-tab-group="search-results" data-target="channelResults">Channels</div>
+        </div>
+        </div>
+        <div class="page-box-content tab-content" data-tab-group="search-results" id="videoResults">
             <div class="row row-eq-height">
-            {% for x in results %}
+            {% for x in video_results %}
                 <div class="col-lg-3 col-sm-4 text-center">
                     {% set url = x['snippet']['thumbnails']['high']['url'] %}
                     <a class="video-link" href="/watch/{{ x['id'] }}" name = "{{ x['id']}}">
@@ -42,6 +48,23 @@
                         <div class="text-muted text-sm">{{ x['statistics']['viewCount'] }} views</div>
                     </div>
                     </a>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="page-box-content tab-content" data-tab-group="search-results" id="channelResults">
+            <div class="row row-eq-height">
+            {% for x in channel_results %}
+                <div class="col-lg-3 col-sm-4 text-center">
+                    {% set channel_id = x['channelId'] %}
+                    {% set channel_name = x['channelTitle'] %}
+                    {% set img_url = "https://i.ytimg.com/i/{{ channel_id }}/1.jpg" %}
+                    {# <a class="video-link" href="/channel/{{ channel_id }}" title="{{ channel_name }}"> #}
+                    <img src="{{ img_url }}" alt="{{ channel_name }}">
+                    <div class="text-left">
+                        <div class="video-thumbnail-title">{{ channel_name }}</div>
+                    </div>
+                    {# </a> #}
                 </div>
             {% endfor %}
             </div>

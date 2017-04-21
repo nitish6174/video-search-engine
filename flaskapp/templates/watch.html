@@ -49,8 +49,12 @@
                                     <h5>{{ display_video['statistics']['commentCount'] }} comments</h5>
                                 </div>
                                 <div>
-                                    <div class="channel-avatar"><img src="https://i.ytimg.com/i/{{display_video['snippet']['channelId']}}/1.jpg" alt="{{ display_video['snippet']['channelTitle'] }}"></div>
-                                    <div class="channel-name">{{ display_video['snippet']['channelTitle'] }}</div>
+                                    <div class="channel-avatar">
+                                        {% set channel_name = display_video['snippet']['channelTitle'] %}
+                                        {% set channel_img_url = "https://i.ytimg.com/i/"+display_video['snippet']['channelId']+"/1.jpg" %}
+                                        <img src="{{ channel_img_url }}" alt="{{ channel_name }}">
+                                    </div>
+                                    <div class="channel-name">{{ channel_name }}</div>
                                 </div>
                                 <br><br>
                                 {% set date = display_video['snippet']['publishedAt'][:10] %}

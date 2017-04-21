@@ -44,6 +44,12 @@ input.form-control:focus {
     padding: 15px;
     padding-left: 20px;
     font-size: 1.3em; }
+  .page-box .page-box-nav {
+    border-bottom: 2px solid whitesmoke;
+    padding: 15px;
+    padding-bottom: 0px;
+    padding-left: 20px;
+    font-size: 1.3em; }
   .page-box .page-box-content {
     padding: 20px; }
   .page-box img {
@@ -51,3 +57,22 @@ input.form-control:focus {
   .page-box .video-thumbnail-title {
     margin-top: 5px;
     font-weight: 700; }
+
+/* Tabbed content */
+.tab-bar {
+  margin-top: 10px; }
+  .tab-bar .tab {
+    border-bottom: 4px solid transparent;
+    cursor: pointer;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-weight: 700; }
+  .tab-bar .tab.active {
+    color: #2a81b7;
+    border-bottom: 4px solid #2a81b7; }
+
+.tab-bar > div {
+  display: inline-block; }
+
+.tab-content {
+  display: none; }

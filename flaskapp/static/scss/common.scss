@@ -54,6 +54,7 @@ input.form-control:focus {
     box-shadow: none;
 }
 
+
 /* Page box styling */
 
 .page-box {
@@ -64,6 +65,14 @@ input.form-control:focus {
     .page-box-title {
         border-bottom: 2px solid $color-bg-light;
         padding: 15px;
+        padding-left: 20px;
+        font-size: 1.3em;
+    }
+
+    .page-box-nav {
+        border-bottom: 2px solid $color-bg-light;
+        padding: 15px;
+        padding-bottom: 0px;
         padding-left: 20px;
         font-size: 1.3em;
     }
@@ -80,4 +89,31 @@ input.form-control:focus {
         margin-top: 5px;
         font-weight: 700;
     }
+}
+
+
+/* Tabbed content */
+
+.tab-bar {
+    margin-top: 10px;
+
+    .tab {
+        border-bottom: 4px solid transparent;
+        cursor: pointer;
+        padding-left: 5px;
+        padding-right: 5px;
+        font-weight: 700;
+    }
+    .tab.active {
+        color: $color-blue-dark;
+        border-bottom: 4px solid $color-blue-dark;
+    }
+}
+
+.tab-bar > div {
+    display: inline-block;
+}
+
+.tab-content {
+    display: none;
 }
