@@ -23,7 +23,7 @@ body {
     margin-bottom: 20px;
 }
 
-.video-link, .video-link:hover {
+a:hover {
     text-decoration: none;
 }
 
@@ -67,6 +67,7 @@ input.form-control:focus {
         padding: 15px;
         padding-left: 20px;
         font-size: 1.3em;
+        font-weight: 700;
     }
 
     .page-box-nav {
@@ -100,8 +101,8 @@ input.form-control:focus {
     .tab {
         border-bottom: 4px solid transparent;
         cursor: pointer;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding: 10px;
+        padding-bottom: 10px;
         font-weight: 700;
     }
     .tab.active {

@@ -13,11 +13,12 @@ from flaskapp.mysql_schema import User, VideoLog, SearchLog
 routes_module = Blueprint('routes_module', __name__)
 
 
-# Home page showing top videos (and recommended videos if signed in)
+# Home page
 @routes_module.route('/', methods=["GET"])
 def home_page():
     if request.method == 'GET':
         mongo_db = mongo.db
+        # Find most viewed videos
         top_videos = list(
             mongo_db.videos.find().sort("statistics.viewCount", -1).limit(12)
         )
@@ -30,69 +31,43 @@ def video_page(video_id):
     if request.method == 'GET':
         mongo_db = mongo.db
         disp_video = mongo_db.videos.find_one({"id": video_id})
-        mongo_db.videos.update_one(
-            {'id': video_id},
-            {'$inc': {'statistics.viewCount': 1}},
-            upsert=False
-        )
         if disp_video is not None:
-            neo4j_db = Graph(user=config.neo4j_user,
-                             password=config.neo4j_pass)
-            source_node = neo4j_db.find_one("Video", "videoId", video_id)
-            rel_edges = [
-                rel for rel in
-                neo4j_db.match(
-                    start_node=source_node
-                )
-            ]
-            edge_end_nodes = {}
-            for x in rel_edges:
-                if x.type() == "SameChannel":
-                    weight = 5
-                elif x.type() == "CommonTags":
-                    weight = 3 * x["weight"]
-                elif x.type() == "CommonDesc":
-                    weight = x["weight"]
-                mongo_id = (x.end_node())["mongoId"]
-                related_id = (x.end_node())["videoId"]
-                if related_id in edge_end_nodes:
-                    edge_end_nodes[related_id]["weight"] += weight
-                else:
-                    edge_end_nodes[related_id] = {
-                        "mongoId": mongo_id,
-                        "weight": weight
-                    }
-            if session.get("user_name"):
-                log_res = VideoLog.query.filter_by(
-                    user_name=session.get("user_name"),
-                    current_video=video_id).all()
-                for x in log_res:
-                    related_video_id = x.clicked_video
-                    if related_video_id in edge_end_nodes:
-                        edge_end_nodes[related_video_id]["weight"] += 2
-            related_nodes = [
-                {
-                    "videoId": x,
-                    "mongoId": edge_end_nodes[x]["mongoId"],
-                    "weight": edge_end_nodes[x]["weight"]
-                }
-                for x in edge_end_nodes
-            ]
-            related_nodes.sort(key=lambda x: x["weight"], reverse=True)
-            related_nodes = related_nodes[:10]
-            mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
-            related_videos = list(mongo_db.videos.find({
-                "_id": {"$in": mongo_ids}
-            }))
-            for x in related_videos:
-                x["weight"] = edge_end_nodes[x["id"]]["weight"]
-            related_videos.sort(key=lambda x: x["weight"], reverse=True)
+            # Update view count of requested video
+            mongo_db.videos.update_one(
+                {'id': video_id},
+                {'$inc': {'statistics.viewCount': 1}},
+                upsert=False
+            )
+            # Find related videos to the current one
+            related_videos = get_related_videos(video_id)
             return render_template('watch.html',
                                    display_video=disp_video,
                                    related_videos=related_videos)
         else:
             return render_template('error.html',
                                    message="Requested video not found")
+
+
+# Channel page
+@routes_module.route('/channel/<channel_id>/', methods=["GET"])
+def channel_page(channel_id):
+    if request.method == 'GET':
+        mongo_db = mongo.db
+        # Find most viewed videos of the requested channel
+        channel_videos = mongo_db.videos.find({
+            "snippet.channelId": channel_id
+        }).sort("statistics.viewCount", -1).limit(24)
+        channel_videos = list(channel_videos)
+        # Check if this channel exists using length of returned results
+        if len(channel_videos) > 0:
+            channel_name = channel_videos[0]["snippet"]["channelTitle"]
+            return render_template('channel.html',
+                                   channel_id=channel_id,
+                                   channel_name=channel_name,
+                                   channel_videos=channel_videos)
+        else:
+            return render_template('error.html',
+                                   message="Requested channel does not exist")
 
 
 # Search results page
@@ -260,6 +235,71 @@ def search_util(search_query):
         "channel_results": [x[1] for x in channel_results[:12]]
     }
     return result
+
+
+# Find videos related to a particular video
+def get_related_videos(video_id):
+    mongo_db = mongo.db
+    neo4j_db = Graph(user=config.neo4j_user,
+                     password=config.neo4j_pass)
+    # Find node corresponding to current video
+    source_node = neo4j_db.find_one("Video", "videoId", video_id)
+    # Get all edges from current node
+    rel_edges = [
+        rel for rel in
+        neo4j_db.match(
+            start_node=source_node
+        )
+    ]
+    # Loop through each edge and update score of end node
+    edge_end_nodes = {}
+    for x in rel_edges:
+        if x.type() == "SameChannel":
+            weight = 5
+        elif x.type() == "CommonTags":
+            weight = 3 * x["weight"]
+        elif x.type() == "CommonDesc":
+            weight = x["weight"]
+        mongo_id = (x.end_node())["mongoId"]
+        related_id = (x.end_node())["videoId"]
+        if related_id in edge_end_nodes:
+            edge_end_nodes[related_id]["weight"] += weight
+        else:
+            edge_end_nodes[related_id] = {
+                "mongoId": mongo_id,
+                "weight": weight
+            }
+    # Add click log weightage to above score
+    if session.get("user_name"):
+        log_res = VideoLog.query.filter_by(
+            user_name=session.get("user_name"),
+            current_video=video_id).all()
+        for x in log_res:
+            related_video_id = x.clicked_video
+            if related_video_id in edge_end_nodes:
+                edge_end_nodes[related_video_id]["weight"] += 2
+    # Construct array of related videos from above found nodes
+    related_nodes = [
+        {
+            "videoId": x,
+            "mongoId": edge_end_nodes[x]["mongoId"],
+            "weight": edge_end_nodes[x]["weight"]
+        }
+        for x in edge_end_nodes
+    ]
+    # Filter top weighted nodes to get most relevant videos
+    related_nodes.sort(key=lambda x: x["weight"], reverse=True)
+    related_nodes = related_nodes[:10]
+    # Fetch data of these videos from MongoDB
+    mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
+    related_videos = list(mongo_db.videos.find({
+        "_id": {"$in": mongo_ids}
+    }))
+    # Sort the fetched documents using score found above
+    for x in related_videos:
+        x["weight"] = edge_end_nodes[x["id"]]["weight"]
+    related_videos.sort(key=lambda x: x["weight"], reverse=True)
+    return related_videos
 
 
 # Create new user account

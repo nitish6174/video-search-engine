@@ -13,7 +13,7 @@ body {
 .bottom-gap {
   margin-bottom: 20px; }
 
-.video-link, .video-link:hover {
+a:hover {
   text-decoration: none; }
 
 .text-sm {
@@ -43,7 +43,8 @@ input.form-control:focus {
     border-bottom: 2px solid whitesmoke;
     padding: 15px;
     padding-left: 20px;
-    font-size: 1.3em; }
+    font-size: 1.3em;
+    font-weight: 700; }
   .page-box .page-box-nav {
     border-bottom: 2px solid whitesmoke;
     padding: 15px;
@@ -64,8 +65,8 @@ input.form-control:focus {
   .tab-bar .tab {
     border-bottom: 4px solid transparent;
     cursor: pointer;
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 10px;
+    padding-bottom: 10px;
     font-weight: 700; }
   .tab-bar .tab.active {
     color: #2a81b7;

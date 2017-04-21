@@ -59,12 +59,12 @@
                     {% set channel_id = x['channelId'] %}
                     {% set channel_name = x['channelTitle'] %}
                     {% set img_url = "https://i.ytimg.com/i/{{ channel_id }}/1.jpg" %}
-                    {# <a class="video-link" href="/channel/{{ channel_id }}" title="{{ channel_name }}"> #}
+                    <a class="video-link" href="/channel/{{ channel_id }}" title="{{ channel_name }}">
                     <img src="{{ img_url }}" alt="{{ channel_name }}">
                     <div class="text-left">
                         <div class="video-thumbnail-title">{{ channel_name }}</div>
                     </div>
-                    {# </a> #}
+                    </a>
                 </div>
             {% endfor %}
             </div>

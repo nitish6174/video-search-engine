@@ -50,11 +50,14 @@
                                 </div>
                                 <div>
                                     <div class="channel-avatar">
+                                        {% set channel_id = display_video['snippet']['channelId'] %}
                                         {% set channel_name = display_video['snippet']['channelTitle'] %}
-                                        {% set channel_img_url = "https://i.ytimg.com/i/"+display_video['snippet']['channelId']+"/1.jpg" %}
+                                        {% set channel_img_url = "https://i.ytimg.com/i/"+channel_id+"/1.jpg" %}
                                         <img src="{{ channel_img_url }}" alt="{{ channel_name }}">
                                     </div>
-                                    <div class="channel-name">{{ channel_name }}</div>
+                                    <div class="channel-name">
+                                        <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
+                                    </div>
                                 </div>
                                 <br><br>
                                 {% set date = display_video['snippet']['publishedAt'][:10] %}
@@ -87,8 +90,12 @@
                                 <img src="{{ url }}">
                             </div>
                             <div class="col-xs-8">
+                                {% set channel_id = x['snippet']['channelId'] %}
+                                {% set channel_name = x['snippet']['channelTitle'] %}
                                 <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
-                                <div class="text-muted">{{ x['snippet']['channelTitle'] }}</div>
+                                <div class="text-muted">
+                                    <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
+                                </div>
                                 <div class="text-muted text-sm">{{ x['statistics']['viewCount'] }} views</div>
                             </div>
                             <div class="clearfix"></div>

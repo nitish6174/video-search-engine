@@ -1,3 +1,6 @@
+import os
+import shutil
+
 import click
 from flask import Flask
 from flask_compress import Compress
@@ -35,16 +38,66 @@ var.mongo.init_app(app, config_prefix='MONGO')
 app.register_blueprint(routes_module)
 
 
+# Click command for setting up database
 @app.cli.command()
-def create_db():
-    # Only import if create_db called
+@click.option("--mode", nargs=1, default=0)
+def create_db(mode):
     from flaskapp.setup_db import main as init_db
-    # All the regsitered Pclasses must be imported to
-    # create tables with the call to create_all
     from flaskapp.mysql_schema import User, VideoLog, SearchLog
-    # init_db()
-    var.mysql.create_all()
-    click.echo('Creating DB')
+    if mode % 2 == 1:
+        click.echo('Running database setup script . . .')
+        init_db()
+    if mode > 1:
+        click.echo('Initializing MySQL models . . .')
+        var.mysql.create_all()
+    if mode > 0:
+        click.echo('Database setup done!')
+    else:
+        click.echo('USAGE : flask create_db --mode <1/2/3>')
+
+
+# Click command for scaffolding
+@app.cli.command()
+@click.option("--page", nargs=1)
+def scaffold(page):
+    template_in = "flaskapp/templates/new_page.html"
+    template_out = "flaskapp/templates/" + page + ".html"
+    scss_out = "flaskapp/static/scss/" + page + ".scss"
+    js_out = "flaskapp/static/js/" + page + ".js"
+    # Check whether requested page name already exists
+    if os.path.isfile(template_out) \
+       or os.path.isfile(scss_out) \
+       or os.path.isfile(js_out):
+        click.echo("This page name is in conflict with existing files")
+    else:
+        click.echo("Following files will be created :")
+        print("1.", template_out)
+        print("2.", scss_out)
+        print("3.", js_out)
+        # Copy template file
+        shutil.copyfile(template_in, template_out)
+        # Make new css and js file for this page
+        open(scss_out, 'w').close()
+        open(js_out, 'w').close()
+        # Set css and js import file names in template file
+        with open(template_out) as f:
+            text = f.read()
+        text = text.replace('page_css', page + '_css')
+        text = text.replace('page_js', page + '_js')
+        with open(template_out, "w") as f:
+            f.write(text)
+        click.echo("Done!")
+        assets_text = '''"page_css": Bundle(\n''' + \
+                      '''    "css/page.css",\n''' + \
+                      '''    output="public/page.%(version)s.css",\n''' + \
+                      '''    filters="cssmin"),\n''' + \
+                      '''"page_js": Bundle(\n''' + \
+                      '''    "js/page.js",\n''' + \
+                      '''    output="public/page.%(version)s.js",\n''' + \
+                      '''    filters="jsmin"),\n'''
+        assets_text = assets_text.replace("page", page)
+        click.echo("\nAdd the below text in assets.py :\n")
+        click.echo(assets_text)
 
 
 # Run app
