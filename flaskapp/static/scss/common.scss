@@ -6,6 +6,7 @@
 body {
     font-family: $font-text;
     background-color: $color-bg-light;
+    padding-top: 50px;
 }
 
 
@@ -15,6 +16,9 @@ body {
     border-radius: 0px;
 }
 
+.left {
+    float: left;
+}
 .right {
     float: right;
 }
@@ -23,9 +27,18 @@ body {
     margin-bottom: 20px;
 }
 
+
+/* Links */
+
 a:hover {
     text-decoration: none;
 }
+a.dark {
+    color: $color-text-dark;
+}
+
+
+/* Text */
 
 .text-sm {
     font-size: 0.8em;

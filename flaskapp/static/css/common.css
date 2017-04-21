@@ -1,11 +1,15 @@
 /* Body styling */
 body {
   font-family: "Noto Sans", sans-serif;
-  background-color: whitesmoke; }
+  background-color: whitesmoke;
+  padding-top: 50px; }
 
 /* Common property classes */
 .corner {
   border-radius: 0px; }
+
+.left {
+  float: left; }
 
 .right {
   float: right; }
@@ -13,9 +17,14 @@ body {
 .bottom-gap {
   margin-bottom: 20px; }
 
+/* Links */
 a:hover {
   text-decoration: none; }
 
+a.dark {
+  color: #444; }
+
+/* Text */
 .text-sm {
   font-size: 0.8em; }
 

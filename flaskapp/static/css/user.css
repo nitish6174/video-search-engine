@@ -1,0 +1,31 @@
+body {
+  background-color: #fefefe;
+  padding: 0; }
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-shadow: 0px 5px 5px 0px #ccc;
+  box-shadow: 0px 0px 2px 0px #ccc;
+  padding-bottom: 10px; }
+
+#navBack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-left: 10%; }
+
+#pageTitle {
+  margin-top: 100px; }
+
+#formContainer {
+  margin-top: 50px;
+  padding: 50px;
+  padding-top: 10px;
+  background-color: whitesmoke;
+  box-shadow: 0px 0px 2px 0px #ccc; }
+
+#formBox {
+  padding-top: 10px; }
