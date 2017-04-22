@@ -15,6 +15,15 @@
 
 
 
+{# Month name from number #}
+{% set month = {
+    "01":"Jan", "02":"Feb", "03":"Mar", "04":"Apr", "05":"May", "06":"Jun",
+    "07":"Jul", "08":"Aug", "09":"Sep", "10":"Oct", "11":"Nov", "12":"Dec"
+    }
+%}
+
+
+
 {# Head block #}
 {% block head %}
 
@@ -40,16 +49,20 @@
                             <hr>
                             <div class="clearfix">
                                 <div class="right text-right">
-                                    <h4>{{ display_video['statistics']['viewCount'] }} views</h4>
+                                    <h4>
+                                        <span class="comma">{{ display_video['statistics']['viewCount'] }}</span> views
+                                    </h4>
                                     <hr>
                                     <h5>
                                         <i class="fa fa-thumbs-o-up"></i>
-                                        {{ display_video['statistics']['likeCount'] }}
+                                        <span class="comma">{{ display_video['statistics']['likeCount'] }}</span>
                                         &nbsp;&nbsp;&bull;&nbsp;&nbsp;
                                         <i class="fa fa-thumbs-o-down"></i>
-                                        {{ display_video['statistics']['dislikeCount'] }}
+                                        <span class="comma">{{ display_video['statistics']['dislikeCount'] }}</span>
                                     </h5>
-                                    <h5>{{ display_video['statistics']['commentCount'] }} comments</h5>
+                                    <h5>
+                                        <span class="comma">{{ display_video['statistics']['commentCount'] }}</span> comments
+                                    </h5>
                                 </div>
                                 <div>
                                     <div class="channel-avatar">
@@ -58,22 +71,46 @@
                                         {% set channel_img_url = "https://i.ytimg.com/i/"+channel_id+"/1.jpg" %}
                                         <img src="{{ channel_img_url }}" alt="{{ channel_name }}">
                                     </div>
-                                    <div class="channel-name">
+                                    <div class="channel-name bold">
                                         <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
                                     </div>
                                 </div>
                                 <br><br>
                                 {% set date = display_video['snippet']['publishedAt'][:10] %}
-                                <div class="publish-date"><strong>Published on :</strong> {{ date }}</div>
+                                {% set disp_date = date[8:] + " " + month[date[5:7]] + " " + date[:4] %}
+                                <div class="publish-date"><strong>Published on :</strong> {{ disp_date }}</div>
                             </div>
                             <hr>
                             {% set description = (display_video['snippet']['description']).split('\n') %}
+                            <div id="description">
                             <p>
                             {% for x in description %}
                                 {{ x }}
                                 <br>
                             {% endfor %}
                             </p>
+                            </div>
+                            <div id="descriptionOverlay"></div>
+                            <h5 class="text-center link active" id="descriptionToggle">
+                                <span id="expandDescriptionMsg">
+                                    <i class="glyphicon glyphicon-chevron-down"></i> 
+                                    View full description
+                                </span>
+                                <span id="collapseDescriptionMsg">
+                                    <i class="glyphicon glyphicon-chevron-up"></i> 
+                                    Hide description
+                                </span>
+                            </h5>
+                            <hr>
+                            <div id="videoTags">
+                            <h4 class="bold">Tags</h4>
+                            <p>
+                            {% set tags = (display_video['snippet']['tags']) %}
+                            {% for x in tags %}
+                                <span class="label label-light tag-label">{{ x }}</span>
+                            {% endfor %}
+                            </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -99,7 +136,9 @@
                                 <div class="text-muted">
                                     <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
                                 </div>
-                                <div class="text-muted text-sm">{{ x['statistics']['viewCount'] }} views</div>
+                                <div class="text-muted text-sm">
+                                    <span class="comma">{{ x['statistics']['viewCount'] }}</span> views
+                                </div>
                             </div>
                             <div class="clearfix"></div>
                         </a>

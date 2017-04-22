@@ -45,7 +45,9 @@
                         <div class="text-muted">
                             <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
                         </div>
-                        <div class="text-muted text-sm">{{ x['statistics']['viewCount'] }} views</div>
+                        <div class="text-muted text-sm">
+                            <span class="comma">{{ x['statistics']['viewCount'] }}</span> views
+                        </div>
                     </div>
                     </a>
                 </div>

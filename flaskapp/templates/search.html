@@ -45,7 +45,9 @@
                     <div class="text-left">
                         <div class="video-thumbnail-title">{{ x['snippet']['title'] }}</div>
                         <div class="text-muted">{{ x['snippet']['channelTitle'] }}</div>
-                        <div class="text-muted text-sm">{{ x['statistics']['viewCount'] }} views</div>
+                        <div class="text-muted text-sm">
+                            <span class="comma">{{ x['statistics']['viewCount'] }}</span> views
+                        </div>
                     </div>
                     </a>
                 </div>

@@ -11,5 +11,32 @@
   height: 50px; }
 
 #watchVideoInfo .channel-name {
-  font-weight: 700;
   padding-left: 10px; }
+
+#watchVideoInfo #description {
+  min-height: 100px;
+  height: 100px;
+  overflow: hidden; }
+
+#watchVideoInfo #descriptionOverlay {
+  position: relative;
+  top: -100px;
+  height: 100px;
+  width: 100%;
+  margin-bottom: -100px;
+  background: linear-gradient(to bottom, transparent 25%, #fff 100%); }
+
+#watchVideoInfo #descriptionToggle {
+  padding: 10px; }
+
+#watchVideoInfo #descriptionToggle:hover {
+  background-color: whitesmoke; }
+
+#watchVideoInfo #collapseDescriptionMsg {
+  display: none; }
+
+#watchVideoInfo #videoTags p {
+  line-height: 1.8em; }
+
+#watchVideoInfo .tag-label {
+  margin-right: 3px; }

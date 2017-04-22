@@ -15,7 +15,37 @@
         height: 50px;
     }
     .channel-name {
-        font-weight: 700;
         padding-left: 10px;
+    }
+
+    #description {
+        min-height: 100px;
+        height: 100px;
+        overflow: hidden;        
+    }
+    #descriptionOverlay {
+        position: relative;
+        top: -100px;
+        height: 100px;
+        width: 100%;
+        margin-bottom: -100px;
+        background: linear-gradient(to bottom, transparent 25%, #fff 100%);
+    }
+    #descriptionToggle {
+        padding: 10px;
+    }
+    #descriptionToggle:hover {
+        background-color: $color-bg-light;
+    }
+    #collapseDescriptionMsg {
+        display: none;
+    }
+
+    #videoTags p {
+        line-height: 1.8em;
+    }
+    .tag-label {
+        // margin-top: 5px;
+        margin-right: 3px;
     }
 }

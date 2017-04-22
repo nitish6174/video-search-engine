@@ -25,9 +25,19 @@ a:hover {
 a.dark {
   color: #444; }
 
+.link {
+  cursor: pointer;
+  color: #3498da; }
+
+.link:hover {
+  color: #2a81b7; }
+
 /* Text */
 .text-sm {
   font-size: 0.8em; }
+
+.bold {
+  font-weight: 700; }
 
 /* Bootstrap mods */
 .row.row-eq-height {
@@ -39,6 +49,10 @@ a.dark {
   .row.row-eq-height [class*='col-'] {
     display: flex;
     flex-direction: column; }
+
+.label.label-light {
+  background-color: #eee;
+  color: #666; }
 
 /* Input */
 input.form-control:focus {

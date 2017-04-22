@@ -38,11 +38,23 @@ a.dark {
     color: $color-text-dark;
 }
 
+.link {
+    cursor: pointer;
+    color: $color-blue-light;
+}
+.link:hover {
+    color: $color-blue-dark;
+}
+
 
 /* Text */
 
 .text-sm {
     font-size: 0.8em;
+}
+
+.bold {
+    font-weight: 700;
 }
 
 
@@ -59,6 +71,11 @@ a.dark {
       display: flex;
       flex-direction: column;
     }
+}
+
+.label.label-light {
+    background-color: #eee;
+    color: #666;
 }
 
 
