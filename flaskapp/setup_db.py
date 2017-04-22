@@ -15,9 +15,9 @@ data_file_folder = os.path.abspath(config.data_folder)
 # Main function
 def main():
     video_data = read_data_files()
-    setup_mysql_db(video_data)
-    # mongo_ids = setup_mongo_db(video_data)
-    # setup_neo4j_db(video_data, mongo_ids)
+    # setup_mysql_db(video_data)
+    mongo_ids = setup_mongo_db(video_data)
+    setup_neo4j_db(video_data, mongo_ids)
 
 
 # Store videoInfo from data files into an array
@@ -121,6 +121,13 @@ def insert_graph_data(db, video_data, mongo_ids):
         node = Node("Video", videoId=obj["id"], mongoId=str(mongo_id))
         node_list.append(node)
         tx.create(node)
+    channel_list = dict(set((obj['snippet']['channelId'], obj['snippet']['channelTitle'])
+                            for obj in video_data))
+    channels = dict()
+    for id_, channel in channel_list.items():
+        node = Node("Channel", channelTitle=channel, channelId=id_)
+        channels[id_] = node
+        tx.create(node)
     print("Done!")
     print("Commiting the nodes . . . ", end="")
     sys.stdout.flush()
@@ -136,10 +143,12 @@ def insert_graph_data(db, video_data, mongo_ids):
         for j in range(i + 1, l):
             v = node_list[j]
             d2 = video_data[j]
-            # Same channel relation
+            # Channel relation
             if d1["snippet"]["channelId"] == d2["snippet"]["channelId"]:
                 tx.create(Relationship(u, "SameChannel", v))
                 tx.create(Relationship(v, "SameChannel", u))
+                tx.create(Relationship(u, "HasChannel", channels[d1["snippet"]["channelId"]]))
+                tx.create(Relationship(v, "HasChannel", channels[d1["snippet"]["channelId"]]))
             # Common tag relation
             common_tags = commonTagCount(d1["snippet"], d2["snippet"])
             if common_tags > 0:
