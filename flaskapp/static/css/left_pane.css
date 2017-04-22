@@ -1,0 +1,10 @@
+#leftPane {
+  position: fixed;
+  max-width: 100vw;
+  width: 300px;
+  height: 100vh;
+  top: 0;
+  z-index: 500;
+  padding-top: 50px;
+  background-color: #fff;
+  box-shadow: 2px 0px 2px 0px #ccc; }

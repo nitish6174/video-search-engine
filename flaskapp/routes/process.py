@@ -33,16 +33,19 @@ def fetch_suggestion_results(search_query):
     # Get list of all video titles
     # video_titles = [x["snippet"]["title"].lower() for x in docs]
     # Fetch all channel names
-    channel_titles = set([x["snippet"]["channelTitle"].lower() for x in docs])
+    channel_titles = set([x["snippet"]["channelTitle"] for x in docs])
     # Break search query into lowercase words
     query_words = search_query.lower().split()
     # Calculate score of each video title using fuzzy matching
     video_suggestions = []
     for i in range(len(docs)):
         t = docs[i]["snippet"]["title"]
+        t_lower = t.lower()
         score = 0
         for q in query_words:
-            inc = fuzz.partial_ratio(q, t)
+            score += fuzz.ratio(q, t_lower)
+            score += fuzz.ratio(search_query.lower(), t_lower)
+            inc = fuzz.partial_ratio(q, t_lower)
             if inc == 100:
                 inc += len(q) * 20
             score += inc
@@ -54,9 +57,12 @@ def fetch_suggestion_results(search_query):
     # Calculate score of each channel name using fuzzy matching
     channel_suggestions = []
     for t in channel_titles:
+        t_lower = t.lower()
         score = 0
         for q in query_words:
-            inc = fuzz.partial_ratio(q, t)
+            score += fuzz.ratio(q, t_lower)
+            score += fuzz.ratio(search_query.lower(), t_lower)
+            inc = fuzz.partial_ratio(q, t_lower)
             if inc == 100:
                 inc += len(q) * 20
             score += inc
@@ -98,17 +104,23 @@ def fetch_search_results(search_query):
     for key in title_data:
         score = 0
         for q in query_words:
+            score += fuzz.ratio(q, key)
+            score += fuzz.ratio(search_query.lower(), key)
             inc = fuzz.partial_ratio(q, key)
             if inc == 100:
                 inc += len(q) * 20
             score += inc
+            score += title_data[key]["statistics"]["viewCount"] / 10000000
         video_results.append([score, title_data[key]])
     # Calculate score of each channel name using fuzzy matching
     channel_results = []
     for key in channel_data:
+        channel_name = channel_data[key]["name"].lower()
         score = 0
         for q in query_words:
-            inc = fuzz.partial_ratio(q, channel_data[key]["name"])
+            score += fuzz.ratio(q, channel_name)
+            score += fuzz.ratio(search_query.lower(), channel_name)
+            inc = fuzz.partial_ratio(q, channel_name)
             if inc == 100:
                 inc += len(q) * 20
             score += inc

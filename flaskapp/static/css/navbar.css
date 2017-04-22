@@ -1,3 +1,6 @@
+nav {
+  z-index: 1000; }
+
 nav.navbar-inverse {
   background-color: #33475b;
   margin: 0;

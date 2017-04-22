@@ -101,6 +101,10 @@ input.form-control:focus {
         font-weight: 700;
     }
 
+    .page-box-title-text {
+        margin-bottom: 10px;
+    }
+
     .page-box-nav {
         border-bottom: 2px solid $color-bg-light;
         padding: 15px;
@@ -127,7 +131,6 @@ input.form-control:focus {
 /* Tabbed content */
 
 .tab-bar {
-    margin-top: 10px;
 
     .tab {
         border-bottom: 4px solid transparent;
