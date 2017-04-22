@@ -50,9 +50,9 @@
     {% endif %}
 
     {# Include left pane if user is logged in #}
-    {# {% if session is defined and session["user_name"] is defined %}
+    {% if session is defined and session["user_name"] is defined %}
         {% include 'left_pane.html' %}
-    {% endif %} #}
+    {% endif %}
 
     {# Include search bar #}
     {% if search_bar!=False %}

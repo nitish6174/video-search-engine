@@ -2,7 +2,18 @@
     <div class="container">
         <div>
             <ul class="nav navbar-nav navbar-left">
-                <li><a class="navbar-brand text-center" href="/"><h1>{{ nav_title }}</h1></a></li>
+                {% if session is defined and session["user_name"] is defined %}
+                <li>
+                    <a class="navbar-brand">
+                        <h1 id="menuButton"><i class="glyphicon glyphicon-menu-hamburger"></i></h1>
+                    </a>
+                </li>
+                {% endif %}
+                <li>
+                    <a class="navbar-brand text-center" href="/">
+                        <h1>{{ nav_title }}</h1>
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="collapse navbar-collapse">

@@ -16,6 +16,7 @@ def getAssets():
             "js/ext/jquery.min.js",
             "js/ext/bootstrap.min.js",
             "js/common.js",
+            "js/navbar.js",
             "js/left_pane.js",
             "js/search_bar.js",
             output="public/common.%(version)s.js",

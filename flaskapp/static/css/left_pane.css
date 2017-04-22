@@ -5,6 +5,15 @@
   height: 100vh;
   top: 0;
   z-index: 500;
-  padding-top: 50px;
+  padding: 20px;
+  padding-top: 70px;
   background-color: #fff;
-  box-shadow: 2px 0px 2px 0px #ccc; }
+  box-shadow: 0px 0px 2px 0px #999;
+  display: none; }
+  #leftPane .pane-group .pane-item {
+    padding: 5px;
+    padding-left: 10px; }
+  #leftPane .pane-group .pane-item:hover {
+    background-color: whitesmoke; }
+  #leftPane .pane-group i {
+    margin-right: 10px; }
