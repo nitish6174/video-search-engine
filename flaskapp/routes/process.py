@@ -2,18 +2,87 @@ from flask import session
 from bson.objectid import ObjectId
 from py2neo import Graph
 from sqlalchemy import and_
+from fuzzywuzzy import fuzz
 
 import flaskapp.config as config
 from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import User, VideoLog, SearchLog
 
 
-# Utility function to search
-def fetch_search_results(search_query):
-    from fuzzywuzzy import fuzz
+doc_list_projection = {
+    "snippet.tags": 0,
+    "snippet.localised": 0,
+    "snippet.description": 0
+}
+
+suggestion_projection = {
+    "id": 1,
+    "snippet.title": 1,
+    "snippet.channelTitle": 1,
+    "statistics.viewCount": 1
+}
+
+
+# Fetch videos, channels suggestions for given query
+def fetch_suggestion_results(search_query):
+    video_suggestions_len = 4
+    channel_suggestions_len = 1
     mongo_db = mongo.db
     # Fetch all documents
-    all_videos = list(mongo_db.videos.find({}))
+    docs = list(mongo_db.videos.find({}, suggestion_projection))
+    # Get list of all video titles
+    # video_titles = [x["snippet"]["title"].lower() for x in docs]
+    # Fetch all channel names
+    channel_titles = set([x["snippet"]["channelTitle"].lower() for x in docs])
+    # Break search query into lowercase words
+    query_words = search_query.lower().split()
+    # Calculate score of each video title using fuzzy matching
+    video_suggestions = []
+    for i in range(len(docs)):
+        t = docs[i]["snippet"]["title"]
+        score = 0
+        for q in query_words:
+            inc = fuzz.partial_ratio(q, t)
+            if inc == 100:
+                inc += len(q) * 20
+            score += inc
+        score += docs[i]["statistics"]["viewCount"] / 10000000
+        video_suggestions.append({"title": t, "score": score})
+        if len(video_suggestions) > video_suggestions_len * 2:
+            video_suggestions.sort(key=lambda x: x["score"], reverse=True)
+            video_suggestions = video_suggestions[:video_suggestions_len]
+    # Calculate score of each channel name using fuzzy matching
+    channel_suggestions = []
+    for t in channel_titles:
+        score = 0
+        for q in query_words:
+            inc = fuzz.partial_ratio(q, t)
+            if inc == 100:
+                inc += len(q) * 20
+            score += inc
+        channel_suggestions.append({"title": t, "score": score})
+        if len(channel_suggestions) > channel_suggestions_len * 4:
+            channel_suggestions.sort(key=lambda x: x["score"], reverse=True)
+            channel_suggestions = channel_suggestions[:channel_suggestions_len]
+    # Sort results by score and return data
+    video_suggestions.sort(key=lambda x: x["score"], reverse=True)
+    channel_suggestions.sort(key=lambda x: x["score"], reverse=True)
+    result = {
+        "video_suggestions": [
+            x["title"] for x in video_suggestions[:video_suggestions_len]
+        ],
+        "channel_suggestions": [
+            x["title"] for x in channel_suggestions[:channel_suggestions_len]
+        ]
+    }
+    return result
+
+
+# Fetch videos and channels with matching title to search query
+def fetch_search_results(search_query):
+    mongo_db = mongo.db
+    # Fetch all documents
+    all_videos = list(mongo_db.videos.find({}, doc_list_projection))
     # Get list of all video titles
     title_data = dict([(x["snippet"]["title"].lower(), x) for x in all_videos])
     # Fetch all channel names
@@ -127,9 +196,9 @@ def fetch_related_videos(video_id):
     related_nodes = related_nodes[:10]
     # Fetch data of these videos from MongoDB
     mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
-    related_videos = list(mongo_db.videos.find({
-        "_id": {"$in": mongo_ids}
-    }))
+    related_videos = list(mongo_db.videos.find(
+        {"_id": {"$in": mongo_ids}}, doc_list_projection
+    ))
     # Sort the fetched documents using score found above
     for x in related_videos:
         x["weight"] = edge_end_nodes[x["id"]]["weight"]
@@ -140,9 +209,9 @@ def fetch_related_videos(video_id):
 # Fetch most watched videos
 def fetch_most_watched_videos():
     mongo_db = mongo.db
-    top_videos = list(
-        mongo_db.videos.find().sort("statistics.viewCount", -1).limit(12)
-    )
+    top_videos = list(mongo_db.videos.find(
+        {}, doc_list_projection
+    ).sort("statistics.viewCount", -1).limit(12))
     res = {
         "list_title": "Top videos",
         "video_list": top_videos
@@ -162,9 +231,10 @@ def fetch_recently_watched_videos():
         )
         if recently_watched is not None:
             # Fetch documents of above found mongo ids
-            recently_watched = list(mongo_db.videos.find({
-                "_id": {"$in": recently_watched["watched_videos"]}
-            }))
+            recently_watched = list(mongo_db.videos.find(
+                {"_id": {"$in": recently_watched["watched_videos"]}},
+                doc_list_projection
+            ))
     res = {
         "list_title": "Recently watched",
         "video_list": recently_watched

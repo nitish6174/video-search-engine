@@ -6,6 +6,15 @@ from flaskapp.routes import routes_module
 from flaskapp.routes.process import *
 
 
+# Suggest videos and channels when searching
+@routes_module.route("/suggest", methods=["POST"])
+def search_suggestions():
+    if request.method == "POST":
+        input_query = request.form["input_query"]
+        res = fetch_suggestion_results(input_query)
+        return jsonify(res)
+
+
 # Store log of click when watching a video
 @routes_module.route("/log/video", methods=["POST"])
 def add_video_log():

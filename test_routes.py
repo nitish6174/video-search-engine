@@ -53,7 +53,6 @@ def test_route(r, max_route_len):
     sys.stdout.flush()
 
 
-
 def pattern_line(s1, s2, counts):
     s = ""
     for x in counts:
