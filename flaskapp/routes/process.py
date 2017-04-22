@@ -1,7 +1,4 @@
-from urllib import parse
-
-from flask import Blueprint, request, render_template, \
-    jsonify, redirect, session
+from flask import session
 from bson.objectid import ObjectId
 from py2neo import Graph
 from sqlalchemy import and_
@@ -10,174 +7,9 @@ import flaskapp.config as config
 from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import User, VideoLog, SearchLog
 
-routes_module = Blueprint("routes_module", __name__)
-
-
-# Home page
-@routes_module.route("/", methods=["GET"])
-def home_page():
-    if request.method == "GET":
-        lists = [
-            fetch_recently_watched_videos(),
-            fetch_most_watched_videos()
-        ]
-        return render_template("home.html", lists=lists)
-
-
-# Search results page
-@routes_module.route("/search/<query>/", methods=["GET"])
-def search_results_page(query):
-    if request.method == "GET":
-        query = parse.unquote(query)
-        res = search_util(query)
-        return render_template("search.html", query=query,
-                               video_results=res["video_results"],
-                               channel_results=res["channel_results"])
-
-
-# Render video by requested Id
-@routes_module.route("/watch/<video_id>/", methods=["GET"])
-def video_page(video_id):
-    if request.method == "GET":
-        mongo_db = mongo.db
-        disp_video = mongo_db.videos.find_one({"id": video_id})
-        if disp_video is not None:
-            # Update view count of requested video
-            mongo_db.videos.update_one(
-                {"id": video_id},
-                {"$inc": {"statistics.viewCount": 1}},
-                upsert=False
-            )
-            # Add video to user"s recently watched videos
-            add_recent_watched_video(disp_video["_id"])
-            # Find related videos to the current one
-            related_videos = get_related_videos(video_id)
-            return render_template("watch.html",
-                                   display_video=disp_video,
-                                   related_videos=related_videos)
-        else:
-            return render_template("error.html",
-                                   message="Requested video not found")
-
-
-# Channel page
-@routes_module.route("/channel/<channel_id>/", methods=["GET"])
-def channel_page(channel_id):
-    if request.method == "GET":
-        mongo_db = mongo.db
-        # Find most viewed videos of the requested channel
-        channel_videos = mongo_db.videos.find({
-            "snippet.channelId": channel_id
-        }).sort("statistics.viewCount", -1).limit(24)
-        channel_videos = list(channel_videos)
-        # Check if this channel exists using length of returned results
-        if len(channel_videos) > 0:
-            channel_name = channel_videos[0]["snippet"]["channelTitle"]
-            return render_template("channel.html",
-                                   channel_id=channel_id,
-                                   channel_name=channel_name,
-                                   channel_videos=channel_videos)
-        else:
-            return render_template("error.html",
-                                   message="Requested channel does not exist")
-
-
-# User recently watched videos page
-@routes_module.route("/recently-watched/", methods=["GET"])
-def recently_watched_page():
-    if request.method == "GET":
-        if session.get("user_name"):
-            lists = [fetch_recently_watched_videos()]
-            return render_template("home.html", lists=lists)
-        else:
-            return redirect("/login")
-
-
-# Store log of click when watching a video
-@routes_module.route("/log/video", methods=["POST"])
-def add_video_log():
-    user_name = session.get("user_name") or "anon"
-    if request.method == "POST":
-        new_log = VideoLog(user_name,
-                           request.form["clicked_video"],
-                           request.form["current_video"])
-        log_data = repr(new_log)
-        try:
-            mysql.session.add(new_log)
-            mysql.session.commit()
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
-
-
-# Store log of click from search results
-@routes_module.route("/log/search", methods=["POST"])
-def add_search_log():
-    user_name = session.get("user_name") or "anon"
-    if request.method == "POST":
-        new_log = SearchLog(user_name,
-                            request.form["clicked_video"],
-                            request.form["search_query"])
-        log_data = repr(new_log)
-        try:
-            mysql.session.add(new_log)
-            mysql.session.commit()
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
-
-
-# Login page
-@routes_module.route("/login", methods=["GET", "POST"])
-def login_page():
-    if request.method == "GET":
-        return render_template("login.html")
-    elif request.method == "POST":
-        form_data = request.form
-        if valid_login(form_data["user_name"], form_data["user_pass"]):
-            session["user_name"] = form_data["user_name"]
-            return redirect("/")
-        else:
-            return render_template("error.html", message="Invalid user")
-
-
-# Sign Up page
-@routes_module.route("/signup", methods=["GET", "POST"])
-def signup_page():
-    if request.method == "GET":
-        return render_template("signup.html")
-    elif request.method == "POST":
-        form_data = request.form
-        user_name = form_data["user_name"]
-        user_pass = form_data["user_pass"]
-        confirm_user_pass = form_data["confirm_user_pass"]
-        if(user_pass != confirm_user_pass):
-            return render_template("error.html",
-                                   message="Passwords do not match")
-        if user_name and user_pass:
-            res = create_user(user_name, user_pass)
-            if(res == "Success"):
-                session["user_name"] = user_name
-                return redirect("/")
-            else:
-                return render_template("error.html", message=res)
-        else:
-            return render_template("error.html",
-                                   message="All the fields are necessary")
-
-
-# Logout page
-@routes_module.route("/logout", methods=["GET"])
-def logout_page():
-    if request.method == "GET":
-        session.pop("user_name", None)
-        return redirect("/")
-
 
 # Utility function to search
-def search_util(search_query):
+def fetch_search_results(search_query):
     from fuzzywuzzy import fuzz
     mongo_db = mongo.db
     # Fetch all documents
@@ -241,7 +73,7 @@ def search_util(search_query):
 
 
 # Find videos related to a particular video
-def get_related_videos(video_id):
+def fetch_related_videos(video_id):
     mongo_db = mongo.db
     neo4j_db = Graph(user=config.neo4j_user,
                      password=config.neo4j_pass)
@@ -360,8 +192,6 @@ def add_recent_watched_video(video_mongo_id):
         mongo_db.users.update_one(
             {"user_name": user_name},
             {"$set": {"watched_videos": a}},
-            # {"$addToSet": {"watched_videos": video_mongo_id}},
-            # {"$push": {"watched_videos": {"$each": [video_mongo_id], "$slice": 24}}},
             upsert=True
         )
 

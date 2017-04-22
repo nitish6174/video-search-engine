@@ -27,9 +27,14 @@
 
 <div class="container">
     <br>
+    {% if error_code is defined %}
+    <h2 class="text-center">{{ error_code }}</h2>
+    {% else %}
     <h2 class="text-center">Oops!</h2>
+    {% endif %}
     <h3 class="text-center">{{ message }}</h3>
-    <h4 class="text-center">Go back to <a href="/" title="Home page">home page</a></h4>
+    <br>
+    <h3 class="text-center">Go back to <a href="/" title="Home page">home page</a></h3>
 </div>
 
 {% endblock %}

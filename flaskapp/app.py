@@ -13,7 +13,7 @@ from flaskapp.routes import routes_module
 
 # Initialize and configure app
 app = Flask(__name__)
-app.secret_key = "Sab bik chuke hain"
+app.secret_key = "gGlgvHVKUbkHVkvgjVGjhvGVjhXSibCTiNxdPOfSEojDEcfVNm"
 
 # Static assets
 app.config["SEND_FILE_MAX_AGE_DEFAULT"] = config.static_file_max_age
@@ -35,6 +35,7 @@ app.config["MONGO_DBNAME"] = config.mongo_name
 var.mongo.init_app(app, config_prefix="MONGO")
 
 # Blueprint routes
+app.url_map.strict_slashes = False
 app.register_blueprint(routes_module)
 
 
