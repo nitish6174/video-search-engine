@@ -83,7 +83,11 @@
                                 {% if user == True %}
                                 <div id="videoInteraction">
                                 <h3>
+                                    {% if video_interaction["watch_later_status"] == True %}
+                                    <span class="active" id="watchLater"><i class="glyphicon glyphicon-time" title="Remove from watch later"></i></span>
+                                    {% else %}
                                     <span id="watchLater"><i class="glyphicon glyphicon-time" title="Add to watch later"></i></span>
+                                    {% endif %}
                                 </h3>
                                 </div>
                                 {% endif %}

@@ -363,6 +363,11 @@ def remove_watch_later_video(video_mongo_id):
 
 # Check if a video is added to user's watch later list
 def check_watch_later(user_name, video_mongo_id):
+    mongo_db = mongo.db
+    user_doc = mongo_db.users.find_one({"user_name": user_name})
+    if (user_doc is not None) and ("watch_later" in user_doc):
+        if video_mongo_id in user_doc["watch_later"]:
+            return True
     return False
 
 

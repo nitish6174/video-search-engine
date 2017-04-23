@@ -33,7 +33,7 @@ def search_results_page(query):
 @routes_module.route("/watch/<video_id>", methods=["GET"])
 def video_page(video_id):
     if request.method == "GET":
-        # user = session.get("user_name")
+        user = session.get("user_name")
         mongo_db = mongo.db
         disp_video = mongo_db.videos.find_one({"id": video_id})
         if disp_video is not None:
@@ -46,17 +46,17 @@ def video_page(video_id):
             # Add video to user's recently watched videos
             add_recent_watched_video(disp_video["_id"])
             # Check video interaction values if user is logged in
-            # video_interaction = {
-            #     "watch_later_status": False
-            # }
-            # if user is not None:
-            #     res = check_watch_later(user, disp_video["_id"])
-            #     video_interaction["watch_later_status"] = res
+            video_interaction = {
+                "watch_later_status": False
+            }
+            if user is not None:
+                res = check_watch_later(user, disp_video["_id"])
+                video_interaction["watch_later_status"] = res
             # Find related videos to the current one
             related_videos = fetch_related_videos(video_id)
             return render_template("watch.html",
                                    display_video=disp_video,
-                                   # video_interaction=video_interaction,
+                                   video_interaction=video_interaction,
                                    related_videos=related_videos)
         else:
             return render_template("error.html",
