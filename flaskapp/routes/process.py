@@ -322,6 +322,7 @@ def add_recent_watched_video(video_mongo_id):
 def add_watch_later_video(video_mongo_id):
     user_name = session.get("user_name")
     if user_name:
+        video_mongo_id = ObjectId(video_mongo_id)
         mongo_db = mongo.db
         user_doc = mongo_db.users.find_one({"user_name": user_name})
         if (user_doc is None) or ("watch_later" not in user_doc):
@@ -344,6 +345,7 @@ def add_watch_later_video(video_mongo_id):
 def remove_watch_later_video(video_mongo_id):
     user_name = session.get("user_name")
     if user_name:
+        video_mongo_id = ObjectId(video_mongo_id)
         mongo_db = mongo.db
         user_doc = mongo_db.users.find_one({"user_name": user_name})
         if (user_doc is not None) and ("watch_later" in user_doc):
@@ -356,6 +358,11 @@ def remove_watch_later_video(video_mongo_id):
                 upsert=True
             )
         return True
+    return False
+
+
+# Check if a video is added to user's watch later list
+def check_watch_later(user_name, video_mongo_id):
     return False
 
 

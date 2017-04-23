@@ -75,10 +75,18 @@
                                         <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
                                     </div>
                                 </div>
-                                <br><br>
+                                <br>
                                 {% set date = display_video['snippet']['publishedAt'][:10] %}
                                 {% set disp_date = date[8:] + " " + month[date[5:7]] + " " + date[:4] %}
                                 <div class="publish-date"><strong>Published on :</strong> {{ disp_date }}</div>
+                                <br>
+                                {% if user == True %}
+                                <div id="videoInteraction">
+                                <h3>
+                                    <span id="watchLater"><i class="glyphicon glyphicon-time" title="Add to watch later"></i></span>
+                                </h3>
+                                </div>
+                                {% endif %}
                             </div>
                             <hr>
                             {% set description = (display_video['snippet']['description']).split('\n') %}
@@ -157,5 +165,8 @@
 
 {# Scripts block #}
 {% block scripts %}
+
+doc_id = '{{ display_video["_id"] }}';
+currentVideo = '{{ display_video["id"] }}';
 
 {% endblock %}

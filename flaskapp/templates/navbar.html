@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <ul class="nav navbar-nav navbar-left">
-                {% if session is defined and session["user_name"] is defined %}
+                {% if user == True %}
                 <li>
                     <a class="navbar-brand">
                         <h1 id="menuButton"><i class="glyphicon glyphicon-menu-hamburger"></i></h1>

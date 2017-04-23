@@ -10,6 +10,15 @@
 {% set search_bar       = search_bar       | default(True) %}
 
 
+
+{# Session variable #}
+{% set user = False %}
+{% if session is defined and session["user_name"] is defined %}
+    {% set user = True %}
+{% endif %}
+
+
+
 <!DOCTYPE html>
 <html>
 
@@ -50,7 +59,7 @@
     {% endif %}
 
     {# Include left pane if user is logged in #}
-    {% if session is defined and session["user_name"] is defined %}
+    {% if user == True %}
         {% include 'left_pane.html' %}
     {% endif %}
 

@@ -22,6 +22,7 @@ def add_watch_later():
         doc_id = request.form["doc_id"]
         try:
             res = add_watch_later_video(doc_id)
+            res = True
             if res is True:
                 return jsonify({"success": True})
         except:

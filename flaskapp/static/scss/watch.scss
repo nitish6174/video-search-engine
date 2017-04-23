@@ -18,6 +18,13 @@
         padding-left: 10px;
     }
 
+    #videoInteraction span {
+        cursor: pointer;
+    }
+    #videoInteraction span.active {
+        color: $color-blue-dark;
+    }
+
     #description {
         min-height: 100px;
         height: 100px;
