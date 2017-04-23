@@ -15,6 +15,32 @@ def search_suggestions():
         return jsonify(res)
 
 
+# Add video to user's watch later list
+@routes_module.route("/add-watch-later", methods=["POST"])
+def add_watch_later():
+    if request.method == "POST":
+        doc_id = request.form["doc_id"]
+        try:
+            res = add_watch_later_video(doc_id)
+            if res is True:
+                return jsonify({"success": True})
+        except:
+            return jsonify({"success": False})
+
+
+# Remove video from user's watch later list
+@routes_module.route("/remove-watch-later", methods=["POST"])
+def remove_watch_later():
+    if request.method == "POST":
+        doc_id = request.form["doc_id"]
+        try:
+            res = remove_watch_later_video(doc_id)
+            if res is True:
+                return jsonify({"success": True})
+        except:
+            return jsonify({"success": False})
+
+
 # Store log of click when watching a video
 @routes_module.route("/log/video", methods=["POST"])
 def add_video_log():

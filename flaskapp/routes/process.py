@@ -154,12 +154,14 @@ def fetch_search_results(search_query):
 
 
 # Find videos related to a particular video
-def fetch_related_videos(video_id):
+def fetch_related_videos(video_id, id_type="videoId", result_len=10):
     mongo_db = mongo.db
     neo4j_db = Graph(user=config.neo4j_user,
                      password=config.neo4j_pass)
     # Find node corresponding to current video
-    source_node = neo4j_db.find_one("Video", "videoId", video_id)
+    source_node = neo4j_db.find_one("Video", id_type, video_id)
+    if id_type == "mongoId":
+        video_id = source_node["videoId"]
     # Get all edges from current node
     rel_edges = [
         rel for rel in
@@ -205,7 +207,7 @@ def fetch_related_videos(video_id):
     ]
     # Filter top weighted nodes to get most relevant videos
     related_nodes.sort(key=lambda x: x["weight"], reverse=True)
-    related_nodes = related_nodes[:10]
+    related_nodes = related_nodes[:result_len]
     # Fetch data of these videos from MongoDB
     mongo_ids = [ObjectId(x["mongoId"]) for x in related_nodes]
     related_videos = list(mongo_db.videos.find(
@@ -237,14 +239,13 @@ def fetch_recently_watched_videos():
     if session.get("user_name"):
         mongo_db = mongo.db
         # Fetch array of watched videos of user
-        recently_watched = mongo_db.users.find_one(
-            {"user_name": session.get("user_name")},
-            {"watched_videos": 1}
+        user_doc = mongo_db.users.find_one(
+            {"user_name": session.get("user_name")}
         )
-        if recently_watched is not None:
+        if (user_doc is not None) and ("watched_videos" in user_doc):
             # Fetch documents of above found mongo ids
             recently_watched = list(mongo_db.videos.find(
-                {"_id": {"$in": recently_watched["watched_videos"]}},
+                {"_id": {"$in": user_doc["watched_videos"]}},
                 doc_list_projection
             ))
     res = {
@@ -254,16 +255,55 @@ def fetch_recently_watched_videos():
     return res
 
 
+# Fetch user's watch later video list
+def fetch_watch_later_videos():
+    watch_later_list = []
+    if session.get("user_name"):
+        mongo_db = mongo.db
+        # Fetch array of watched videos of user
+        user_doc = mongo_db.users.find_one(
+            {"user_name": session.get("user_name")}
+        )
+        if (user_doc is not None) and ("watch_later" in user_doc):
+            # Fetch documents of above found mongo ids
+            watch_later_list = list(mongo_db.videos.find(
+                {"_id": {"$in": user_doc["watch_later"]}},
+                doc_list_projection
+            ))
+    res = {
+        "list_title": "Watch later",
+        "video_list": watch_later_list
+    }
+    return res
+
+
+# Fetch recommended videos for user
+def fetch_recommended_videos():
+    recommended_videos_list = []
+    if session.get("user_name"):
+        mongo_db = mongo.db
+        # Fetch array of watched videos of user
+        user_doc = mongo_db.users.find_one(
+            {"user_name": session.get("user_name")}
+        )
+        if (user_doc is not None) and ("watched_videos" in user_doc):
+            for x in user_doc["watched_videos"]:
+                res = fetch_related_videos(str(x), id_type="mongoId", result_len=3)
+                recommended_videos_list.extend(res)
+    res = {
+        "list_title": "Recommended for you",
+        "video_list": recommended_videos_list
+    }
+    return res
+
+
 # Add video to user's recently watched videos
 def add_recent_watched_video(video_mongo_id):
     user_name = session.get("user_name")
     if user_name:
         mongo_db = mongo.db
-        user_doc = mongo_db.users.find_one(
-            {"user_name": user_name},
-            {"watched_videos": 1}
-        )
-        if user_doc is None:
+        user_doc = mongo_db.users.find_one({"user_name": user_name})
+        if (user_doc is None) or ("watched_videos" not in user_doc):
             a = [video_mongo_id]
         else:
             a = user_doc["watched_videos"]
@@ -276,6 +316,47 @@ def add_recent_watched_video(video_mongo_id):
             {"$set": {"watched_videos": a}},
             upsert=True
         )
+
+
+# Add video to user's watch later list
+def add_watch_later_video(video_mongo_id):
+    user_name = session.get("user_name")
+    if user_name:
+        mongo_db = mongo.db
+        user_doc = mongo_db.users.find_one({"user_name": user_name})
+        if (user_doc is None) or ("watch_later" not in user_doc):
+            a = [video_mongo_id]
+        else:
+            a = user_doc["watch_later"]
+            if video_mongo_id in a:
+                a.remove(video_mongo_id)
+            a.append(video_mongo_id)
+        mongo_db.users.update_one(
+            {"user_name": user_name},
+            {"$set": {"watch_later": a}},
+            upsert=True
+        )
+        return True
+    return False
+
+
+# Remove video from user's watch later list
+def remove_watch_later_video(video_mongo_id):
+    user_name = session.get("user_name")
+    if user_name:
+        mongo_db = mongo.db
+        user_doc = mongo_db.users.find_one({"user_name": user_name})
+        if (user_doc is not None) and ("watch_later" in user_doc):
+            a = user_doc["watch_later"]
+            if video_mongo_id in a:
+                a.remove(video_mongo_id)
+            mongo_db.users.update_one(
+                {"user_name": user_name},
+                {"$set": {"watch_later": a}},
+                upsert=True
+            )
+        return True
+    return False
 
 
 # Create new user account

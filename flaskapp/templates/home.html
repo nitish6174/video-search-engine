@@ -28,7 +28,7 @@
 <div class="container">
 
     {% for list in lists %}
-    {% if list["video_list"]|length > 0 %}
+    {% if list["video_list"]|length > 0 or list["blank_message"] %}
     <div class="page-box video-list-box">
         <div class="page-box-title">{{ list["list_title"] }}</div>
         <div class="page-box-content">
@@ -50,6 +50,10 @@
                         </div>
                     </div>
                     </a>
+                </div>
+            {% else %}
+                <div class="col-xs-12 text-center">
+                    <h4>{{ list["blank_message"] }}</h4>
                 </div>
             {% endfor %}
             </div>

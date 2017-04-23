@@ -12,7 +12,7 @@ from flaskapp.routes.process import *
 def home_page():
     if request.method == "GET":
         lists = [
-            fetch_recently_watched_videos(),
+            # fetch_recently_watched_videos(),
             fetch_most_watched_videos()
         ]
         return render_template("home.html", lists=lists)
@@ -76,12 +76,40 @@ def channel_page(channel_id):
                                    message="Requested channel does not exist")
 
 
-# User recently watched videos page
+# User's recently watched videos page
 @routes_module.route("/recently-watched", methods=["GET"])
 def recently_watched_page():
     if request.method == "GET":
         if session.get("user_name"):
-            lists = [fetch_recently_watched_videos()]
+            res = fetch_recently_watched_videos()
+            res["blank_message"] = "You have not watched any video till now"
+            lists = [res]
+            return render_template("home.html", lists=lists)
+        else:
+            return redirect("/login")
+
+
+# User's watch later list page
+@routes_module.route("/watch-later", methods=["GET"])
+def watch_later_page():
+    if request.method == "GET":
+        if session.get("user_name"):
+            res = fetch_watch_later_videos()
+            res["blank_message"] = "You have not marked any video as watch later"
+            lists = [res]
+            return render_template("home.html", lists=lists)
+        else:
+            return redirect("/login")
+
+
+# User's recommended videos page
+@routes_module.route("/recommended-videos", methods=["GET"])
+def recommended_videos_page():
+    if request.method == "GET":
+        if session.get("user_name"):
+            res = fetch_recommended_videos()
+            res["blank_message"] = "Sorry! You must see some videos first to get some recommendations"
+            lists = [res]
             return render_template("home.html", lists=lists)
         else:
             return redirect("/login")

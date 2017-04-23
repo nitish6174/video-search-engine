@@ -59,6 +59,7 @@ def setup_mongo_db(video_data):
     print("Clearing existing data . . . ", end="")
     sys.stdout.flush()
     db.videos.remove({})
+    db.users.remove({})
     print("Done!")
     print("Inserting data in MongoDB . . . ", end="")
     sys.stdout.flush()
