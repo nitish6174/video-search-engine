@@ -4,7 +4,7 @@ from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import VideoLog, SearchLog
 from flaskapp.routes import routes_module
 from flaskapp.routes.process import *
-from flaskapp.neo_schema import User, Video, Channel
+from flaskapp.neo_schema import User, Video
 
 
 # Suggest videos and channels when searching
@@ -88,8 +88,8 @@ def like_video():
         user_obj = User(user)
         if request.method == "POST":
             user_obj.like_video(request.form['videoId'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+            return jsonify({'success': 1})
+    return jsonify({'success': 0})
 
 
 @routes_module.route("/dislike-video", methods=["POST"])
@@ -99,8 +99,8 @@ def dislike_video():
         user_obj = User(user)
         if request.method == "POST":
             user_obj.dislike_video(request.form['videoId'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+            return jsonify({'success': 1})
+    return jsonify({'success': 0})
 
 
 @routes_module.route("/clear-like", methods=["POST"])
@@ -110,8 +110,8 @@ def clear_like_video():
         user_obj = User(user)
         if request.method == "POST":
             user_obj.clear_rel_with_video(request.form['videoId'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+            return jsonify({'success': 1})
+    return jsonify({'success': 0})
 
 
 @routes_module.route("/check-interaction/<action_type>", methods=["POST"])
@@ -121,13 +121,13 @@ def check_action_status(action_type):
         user_obj = User(user)
         if request.method == "POST":
             if action_type == 'like':
-                user_obj.is_liked_video(request.form['videoId'])
+                val = user_obj.is_liked_video(request.form['videoId'])
             elif action_type == 'dislike':
-                user_obj.is_disliked_video(request.form['videoId'])
+                val = user_obj.is_disliked_video(request.form['videoId'])
             elif action_type == 'subscribe':
-                user_obj.is_subscribed(request.form['channelTitle'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+                val = user_obj.is_subscribed(request.form['channelId'])
+            return jsonify({'success': 1, "val": val})
+    return jsonify({'success': 0})
 
 
 @routes_module.route("/subscribe-channel", methods=["POST"])
@@ -136,9 +136,9 @@ def subscribe():
     if user is not None:
         user_obj = User(user)
         if request.method == "POST":
-            user_obj.subscribe(request.form['channelTitle'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+            user_obj.subscribe(request.form['channelId'])
+            return jsonify({'success': 1})
+    return jsonify({'success': 0})
 
 
 @routes_module.route("/unsubscribe-channel", methods=["POST"])
@@ -147,6 +147,15 @@ def unsubscribe():
     if user is not None:
         user_obj = User(user)
         if request.method == "POST":
-            user_obj.unsubscribe(request.form['channelTitle'])
-            return jsonify({'success':1})
-    return jsonify({'success':0})
+            user_obj.unsubscribe(request.form['channelId'])
+            return jsonify({'success': 1})
+    return jsonify({'success': 0})
+
+
+@routes_module.route("/get-count", methods=["POST"])
+def get_count():
+    obj = Video(request.form['videoId'])
+    if request.method == "POST":
+        lc = obj.liked_by_count()
+        dlc = obj.disliked_by_count()
+        return jsonify({'success': 1, "lc": lc, "dlc": dlc})

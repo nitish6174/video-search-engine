@@ -289,7 +289,9 @@ def fetch_recommended_videos():
         )
         if (user_doc is not None) and ("watched_videos" in user_doc):
             for x in user_doc["watched_videos"]:
-                res = fetch_related_videos(str(x), id_type="mongoId", result_len=3)
+                res = fetch_related_videos(str(x),
+                                           id_type="mongoId",
+                                           result_len=3)
                 recommended_videos_list.extend(res)
     res = {
         "list_title": "Recommended for you",
@@ -381,7 +383,7 @@ def create_user(user_name, user_pass):
     except:
         return "User already exists"
     else:
-        print(Neo_User(user_name).register())
+        Neo_User(user_name).register()
         return "Success"
 
 
@@ -389,4 +391,4 @@ def create_user(user_name, user_pass):
 def valid_login(user_name, user_pass):
     query = mysql.session.query(User)
     return bool(query.filter(and_(User.user_name == user_name,
-                             User.user_pass == user_pass)).count())
+                                  User.user_pass == user_pass)).count())

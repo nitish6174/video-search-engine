@@ -22,6 +22,35 @@ $(document).ready(function(){
     });
 
 
+    /* Check interaction */
+    $.post("/check-interaction/like",{
+        videoId: currentVideo
+    }, function(data, status){
+        if(data["success"]==1 && data["val"]==1)
+        {
+            $("#likeVideo").addClass('active');
+        }
+    });
+    $.post("/check-interaction/dislike",{
+        videoId: currentVideo
+    }, function(data, status){
+        if(data["success"]==1 && data["val"]==1)
+        {
+            $("#dislikeVideo").addClass('active');
+        }
+    });
+    $.post("/check-interaction/subscribe",{
+        channelId: channelId
+    }, function(data, status){
+        if(data["success"]==1 && data["val"]==1)
+        {
+            $("#subscribeBtn").html("Unsubscribe");
+            $("#subscribeBtn").removeClass("btn-primary");
+            $("#subscribeBtn").addClass("btn-default");
+        }
+    });
+
+
     /* Like button */
     $("#likeVideo").click(function(){
         var elem = $(this);
@@ -63,6 +92,34 @@ $(document).ready(function(){
             }, function(data, status){
                 $(elem).addClass("active");
                 $("#likeVideo").removeClass("active");
+            });
+        }
+    });
+
+
+    /* Subscribe button */
+    $("#subscribeBtn").click(function(){
+        var elem = $(this);
+        if($(elem).hasClass("active"))
+        {
+            $.post("/unsubscribe-channel",{
+                channelId: channelId
+            }, function(data, status){
+                $(elem).removeClass("active");
+                $(elem).html("Subscribe");
+                $(elem).removeClass("btn-default");
+                $(elem).addClass("btn-primary");
+            });
+        }
+        else
+        {
+            $.post("/subscribe-channel",{
+                channelId: channelId
+            }, function(data, status){
+                $(elem).addClass("active");
+                $(elem).html("Unsubscribe");
+                $(elem).removeClass("btn-primary");
+                $(elem).addClass("btn-default");
             });
         }
     });

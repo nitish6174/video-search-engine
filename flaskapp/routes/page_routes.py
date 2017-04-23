@@ -105,7 +105,9 @@ def watch_later_page():
     if request.method == "GET":
         if session.get("user_name"):
             res = fetch_watch_later_videos()
-            res["blank_message"] = "You have not marked any video as watch later"
+            res["blank_message"] = """
+            You have not marked any video as watch later
+            """
             lists = [res]
             return render_template("home.html", lists=lists)
         else:
@@ -143,7 +145,9 @@ def recommended_videos_page():
     if request.method == "GET":
         if session.get("user_name"):
             res = fetch_recommended_videos()
-            res["blank_message"] = "Sorry! You must see some videos first to get some recommendations"
+            res["blank_message"] = """
+            Sorry! You must see some videos first to get some recommendations
+            """
             lists = [res]
             return render_template("home.html", lists=lists)
         else:

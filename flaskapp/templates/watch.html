@@ -55,10 +55,10 @@
                                     <hr>
                                     <h5>
                                         <span class="video-interaction" id="likeVideo"><i class="fa fa-thumbs-o-up"></i></span>
-                                        <span class="comma">{{ display_video['statistics']['likeCount'] }}</span>
+                                        <span class="comma" id="likeVal">{{ display_video['statistics']['likeCount'] }}</span>
                                         &nbsp;&nbsp;&bull;&nbsp;&nbsp;
                                         <span class="video-interaction" id="dislikeVideo"><i class="fa fa-thumbs-o-down"></i></span>
-                                        <span class="comma">{{ display_video['statistics']['dislikeCount'] }}</span>
+                                        <span class="comma" id="dislikeVal">{{ display_video['statistics']['dislikeCount'] }}</span>
                                     </h5>
                                     <h5>
                                         <span class="comma">{{ display_video['statistics']['commentCount'] }}</span> comments
@@ -68,11 +68,17 @@
                                     <div class="channel-avatar">
                                         {% set channel_id = display_video['snippet']['channelId'] %}
                                         {% set channel_name = display_video['snippet']['channelTitle'] %}
+                                        <script type="text/javascript">
+                                            channelId = '{{ channel_id }}';
+                                        </script>
                                         {% set channel_img_url = "https://i.ytimg.com/i/"+channel_id+"/1.jpg" %}
                                         <img src="{{ channel_img_url }}" alt="{{ channel_name }}">
                                     </div>
                                     <div class="channel-name bold">
                                         <a href="/channel/{{ channel_id }}" title="{{ channel_name }}">{{ channel_name }}</a>
+                                        <div>
+                                            <button class="btn btn-xs btn-primary" id="subscribeBtn">Subscribe</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <br>
@@ -170,5 +176,6 @@
 
 doc_id = '{{ display_video["_id"] }}';
 currentVideo = '{{ display_video["id"] }}';
+{# channelId = '{{ display_video['snippet']['channelId'] }}'; #}
 
 {% endblock %}
