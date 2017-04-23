@@ -47,6 +47,12 @@ class User:
         user = self.find()
         Video(video_id).dislike(user)
 
+    def is_liked_video(self, video_id):
+        return graph.exists(Relationship(self.find(), 'Likes', Video(video_id).find()))
+
+    def is_disliked_video(self, video_id):
+        return graph.exists(Relationship(self.find(), 'Dislikes', Video(video_id).find()))
+
     def clear_rel_with_video(self, video_id):
         user = self.find()
         Video(video_id).dislike(user)
