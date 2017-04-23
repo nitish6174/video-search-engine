@@ -5,6 +5,7 @@ from flask import request, render_template, redirect, session
 from flaskapp.shared_variables import *
 from flaskapp.routes import routes_module
 from flaskapp.routes.process import *
+from flaskapp.neo_schema import User
 
 
 # Home page
@@ -105,6 +106,31 @@ def watch_later_page():
         if session.get("user_name"):
             res = fetch_watch_later_videos()
             res["blank_message"] = "You have not marked any video as watch later"
+            lists = [res]
+            return render_template("home.html", lists=lists)
+        else:
+            return redirect("/login")
+
+
+# User's watch later list page
+@routes_module.route("/liked-videos", methods=["GET"])
+def liked_videos_page():
+    if request.method == "GET":
+        user = session.get("user_name")
+        if user is not None:
+            mongo_db = mongo.db
+            liked_videos = []
+            mongo_ids = User(user).liked_videos()
+            # Fetch data of these videos from MongoDB
+            mongo_ids = [ObjectId(x["video.mongoId"]) for x in mongo_ids]
+            liked_videos = list(mongo_db.videos.find(
+                {"_id": {"$in": mongo_ids}}, doc_list_projection
+            ))
+            res = {
+                "list_title": "Liked videos",
+                "video_list": liked_videos,
+                "blank_message": "You have not liked any video yet"
+            }
             lists = [res]
             return render_template("home.html", lists=lists)
         else:

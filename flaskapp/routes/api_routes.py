@@ -6,6 +6,7 @@ from flaskapp.routes import routes_module
 from flaskapp.routes.process import *
 from flaskapp.neo_schema import User, Video, Channel
 
+
 # Suggest videos and channels when searching
 @routes_module.route("/suggest", methods=["POST"])
 def search_suggestions():
@@ -45,117 +46,107 @@ def remove_watch_later():
 # Store log of click when watching a video
 @routes_module.route("/log/video", methods=["POST"])
 def add_video_log():
-    user_name = session.get("user_name") or "anon"
-    if request.method == "POST":
-        new_log = VideoLog(user_name,
-                           request.form["clicked_video"],
-                           request.form["current_video"])
-        log_data = repr(new_log)
-        try:
-            mysql.session.add(new_log)
-            mysql.session.commit()
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+    user_name = session.get("user_name")
+    if user is not None:
+        if request.method == "POST":
+            new_log = VideoLog(user_name,
+                               request.form["clicked_video"],
+                               request.form["current_video"])
+            log_data = repr(new_log)
+            try:
+                mysql.session.add(new_log)
+                mysql.session.commit()
+            except Exception as e:
+                return jsonify({"error": str(e)})
+            else:
+                return jsonify(log_data)
 
 
 # Store log of click from search results
 @routes_module.route("/log/search", methods=["POST"])
 def add_search_log():
-    user_name = session.get("user_name") or "anon"
-    if request.method == "POST":
-        new_log = SearchLog(user_name,
-                            request.form["clicked_video"],
-                            request.form["search_query"])
-        log_data = repr(new_log)
-        try:
-            mysql.session.add(new_log)
-            mysql.session.commit()
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+    user_name = session.get("user_name")
+    if user is not None:
+        if request.method == "POST":
+            new_log = SearchLog(user_name,
+                                request.form["clicked_video"],
+                                request.form["search_query"])
+            log_data = repr(new_log)
+            try:
+                mysql.session.add(new_log)
+                mysql.session.commit()
+            except Exception as e:
+                return jsonify({"error": str(e)})
+            else:
+                return jsonify(log_data)
 
 
-@routes_module.route("/like", methods=["POST"])
+@routes_module.route("/like-video", methods=["POST"])
 def like_video():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             user_obj.like_video(request.form['videoId'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})
 
 
-@routes_module.route("/dislike", methods=["POST"])
+@routes_module.route("/dislike-video", methods=["POST"])
 def dislike_video():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             user_obj.dislike_video(request.form['videoId'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})
 
 
-@routes_module.route("/clear", methods=["POST"])
+@routes_module.route("/clear-like", methods=["POST"])
 def clear_like_video():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             user_obj.clear_rel_with_video(request.form['videoId'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})
 
 
-@routes_module.route("/check/<action_type>", methods=["POST"])
-def check_action_status():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+@routes_module.route("/check-interaction/<action_type>", methods=["POST"])
+def check_action_status(action_type):
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             if action_type == 'like':
                 user_obj.is_liked_video(request.form['videoId'])
             elif action_type == 'dislike':
                 user_obj.is_disliked_video(request.form['videoId'])
             elif action_type == 'subscribe':
                 user_obj.is_subscribed(request.form['channelTitle'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})
 
 
-@routes_module.route("/subscribe", methods=["POST"])
+@routes_module.route("/subscribe-channel", methods=["POST"])
 def subscribe():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             user_obj.subscribe(request.form['channelTitle'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})
 
 
-@routes_module.route("/unsubscribe", methods=["POST"])
+@routes_module.route("/unsubscribe-channel", methods=["POST"])
 def unsubscribe():
-    user = session.get("user_name") or "anon"
-    user_obj = User(user)
-    if request.method == "POST":
-        try:
+    user = session.get("user_name")
+    if user is not None:
+        user_obj = User(user)
+        if request.method == "POST":
             user_obj.unsubscribe(request.form['channelTitle'])
-        except Exception as e:
-            return jsonify({"error": str(e)})
-        else:
-            return jsonify(log_data)
+            return jsonify({'success':1})
+    return jsonify({'success':0})

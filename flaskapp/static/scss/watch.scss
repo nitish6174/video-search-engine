@@ -18,10 +18,10 @@
         padding-left: 10px;
     }
 
-    #videoInteraction span {
+    .video-interaction {
         cursor: pointer;
     }
-    #videoInteraction span.active {
+    .video-interaction.active {
         color: $color-blue-dark;
     }
 

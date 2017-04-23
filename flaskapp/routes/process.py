@@ -7,6 +7,7 @@ from fuzzywuzzy import fuzz
 import flaskapp.config as config
 from flaskapp.shared_variables import *
 from flaskapp.mysql_schema import User, VideoLog, SearchLog
+from flaskapp.neo_schema import User as Neo_User
 
 
 doc_list_projection = {
@@ -380,6 +381,7 @@ def create_user(user_name, user_pass):
     except:
         return "User already exists"
     else:
+        print(Neo_User(user_name).register())
         return "Success"
 
 

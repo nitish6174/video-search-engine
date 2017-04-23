@@ -1,13 +1,17 @@
-from py2neo import Graph, Node, Relationship
+from py2neo import authenticate, Graph, Node, Relationship
 from datetime import datetime
 import os
 import uuid
 
-url = os.environ.get('GRAPHENEDB_URL', 'http://localhost:7474')
-username = os.environ.get('NEO4J_USERNAME')
-password = os.environ.get('NEO4J_PASSWORD')
+import flaskapp.config as config
 
-graph = Graph(url + '/db/data/', username=username, password=password)
+# url = os.environ.get('GRAPHENEDB_URL', 'http://localhost:7474')
+# username = os.environ.get('NEO4J_USERNAME')
+# password = os.environ.get('NEO4J_PASSWORD')
+# graph = Graph(url + '/db/data/', username=username, password=password)
+
+authenticate("localhost:7474", config.neo4j_user, config.neo4j_pass)
+graph = Graph()
 
 
 class User:
@@ -55,23 +59,23 @@ class User:
 
     def clear_rel_with_video(self, video_id):
         user = self.find()
-        Video(video_id).dislike(user)
+        Video(video_id).clear_user_rel(user)
 
     def liked_videos(self):
         query = '''
         MATCH (user:User)-[:Likes]-(video:Video)
         WHERE user.username = {user}
-        RETURN DISTINCT video.videoId
+        RETURN DISTINCT video.mongoId
         '''
-        return graph.run(query, user=self.username)
+        return graph.data(query, user=self.username)
 
     def disliked_videos(self):
         query = '''
         MATCH (user:User)-[:Dislikes]-(video:Video)
         WHERE user.username = {user}
-        RETURN DISTINCT video.videoId
+        RETURN DISTINCT video.mongoId
         '''
-        return graph.run(query, user=self.username)
+        return graph.data(query, user=self.username)
 
 
 class Channel:
@@ -169,4 +173,9 @@ class Video:
         graph.create(Relationship(user, "Dislikes", self.find()))
 
     def clear_user_rel(self, user):
-        graph.separate(user, self.find())
+        query = """
+        MATCH (n:User)-[r]-(v:Video)
+        WHERE n.username={user} and v.videoId={vid}
+        DELETE r
+        """
+        graph.run(query, user=user['username'], vid=self.find()['videoId'])        

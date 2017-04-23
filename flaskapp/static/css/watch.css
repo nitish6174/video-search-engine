@@ -13,10 +13,10 @@
 #watchVideoInfo .channel-name {
   padding-left: 10px; }
 
-#watchVideoInfo #videoInteraction span {
+#watchVideoInfo .video-interaction {
   cursor: pointer; }
 
-#watchVideoInfo #videoInteraction span.active {
+#watchVideoInfo .video-interaction.active {
   color: #2a81b7; }
 
 #watchVideoInfo #description {

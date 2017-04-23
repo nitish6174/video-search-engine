@@ -22,6 +22,52 @@ $(document).ready(function(){
     });
 
 
+    /* Like button */
+    $("#likeVideo").click(function(){
+        var elem = $(this);
+        if($(elem).hasClass("active"))
+        {
+            $.post("/clear-like",{
+                videoId: currentVideo
+            }, function(data, status){
+                $(elem).removeClass("active");
+            });
+        }
+        else
+        {
+            $.post("/like-video",{
+                videoId: currentVideo
+            }, function(data, status){
+                $(elem).addClass("active");
+                $("#dislikeVideo").removeClass("active");
+            });
+        }
+    });
+
+
+    /* Dislike button */
+    $("#dislikeVideo").click(function(){
+        var elem = $(this);
+        if($(elem).hasClass("active"))
+        {
+            $.post("/clear-like",{
+                videoId: currentVideo
+            }, function(data, status){
+                $(elem).removeClass("active");
+            });
+        }
+        else
+        {
+            $.post("/dislike-video",{
+                videoId: currentVideo
+            }, function(data, status){
+                $(elem).addClass("active");
+                $("#likeVideo").removeClass("active");
+            });
+        }
+    });
+
+
     /* Watch later button */
     $("#watchLater").click(function(){
         var elem = $(this);
